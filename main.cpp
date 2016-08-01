@@ -1,265 +1,222 @@
 
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
 #include <iostream>
-#include <cmath>
+#include <string>
+using namespace std;
 
-// GLEW
-#define GLEW_STATIC
-#include <GL/glew.h>
+#ifdef __APPLE__
+#  include <OpenGL/gl.h>
+#  include <OpenGL/glu.h>
+#  include <GLUT/glut.h>
+#else
+#  include <GL/gl.h>
+#  include <GL/glu.h>
+#  include <GL/glut.h>
+#endif
 
-// GLFW
-#include <GLFW/glfw3.h>
+// Includes all libst classes
+#include "lib/libst/include/st.h"
 
-// GLM Mathematics
-#define GLM_FORCE_RADIANS // force everything in radian
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+const int g_k_window_width = 768;
+const int g_k_window_height = 512;
 
-// Other includes
-#include "headers/shader.h"
-#include "headers/camera.h"
+// The default mesh
+STShape * g_shape;
 
+// How many iterations of smoothing
+unsigned int g_k_num_iterations = 1;
 
-// Function prototypes
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void do_movement();
+// Inspection controls
+bool g_just_clicked = false;
+double g_mouse_x = 0.0;
+double g_mouse_y = 0.0;
+double g_mouse_x_prev = 0.0;
+double g_mouse_y_prev = 0.0;
+double g_rot_angle_x = 0.0;
+double g_rot_angle_y = 0.0;
 
-// Window dimensions
-const GLuint WIDTH = 800, HEIGHT = 600;
-
-// Camera
-Camera  camera(glm::vec3(0.0f, 0.0f, 3.0f));
-GLfloat lastX  =  WIDTH  / 2.0;
-GLfloat lastY  =  HEIGHT / 2.0;
-bool    keys[1024];
-
-// Light attributes
-glm::vec3 lightPos(-0.35f, 0.3f, 2.0f);
-
-// Deltatime
-GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
-GLfloat lastFrame = 0.0f;  	// Time of last frame
-
-// The MAIN function, from here we start the application and run the game loop
-int main()
+//--------------------------------------------------------- 
+// Your task is to implement this method by making a copy 
+// of "g_shape" which models "g_k_num_iterations" of 
+// Laplacian smoothing.
+//---------------------------------------------------------
+void computeLaplacianSmoothedMesh()
 {
-    // Init GLFW
-    glfwInit();
-    // Set all the required options for GLFW
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+  // Do it!
+}
 
-    // Create a GLFWwindow object that we can use for GLFW's functions
-    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "HW3", nullptr, nullptr);
-    glfwMakeContextCurrent(window);
+//--------------------------------------------------------- 
+// Render the scene
+//---------------------------------------------------------
+void display()
+{
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Set the required callback functions
-    glfwSetKeyCallback(window, key_callback);
-    glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetScrollCallback(window, scroll_callback);
+  // setup lighting
+  float mat_amb_diff[] = { 0.6, 0.6, 0.6, 1.0 };
+  float mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+  float mat_shininess[] = { 10.0 };
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, mat_amb_diff);
+  glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+  glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 
-    // GLFW Options
-    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-    // Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
-    glewExperimental = GL_TRUE;
-    // Initialize GLEW to setup the OpenGL Function pointers
-    glewInit();
-
-    int w,h;
-    glfwGetFramebufferSize( window, &w, &h);
-
-    // Define the viewport dimensions
-    glViewport(0, 0, w, h);
-
-    // OpenGL options
-    glEnable(GL_DEPTH_TEST);
-
-    // Build and compile our shader program
-    Shader lightingShader("phong.vs", "phong.frag");
-
-    // Set up vertex data (and buffer(s)) and attribute pointers
-    GLfloat vertices[] = {
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-
-//        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-//         0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-//         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-//         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-//        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-//        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
-    };
-    // First, set the container's VAO (and VBO)
-    GLuint VBO, containerVAO;
-    glGenVertexArrays(1, &containerVAO);
-    glGenBuffers(1, &VBO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindVertexArray(containerVAO);
-    // Position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
-    glEnableVertexAttribArray(0);
-    // Normal attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-    glEnableVertexAttribArray(1);
-    glBindVertexArray(0);
-
-    // Then, we set the light's VAO (VBO stays the same. After all, the vertices are the same for the light object (also a 3D cube))
-    GLuint lightVAO;
-    glGenVertexArrays(1, &lightVAO);
-    glBindVertexArray(lightVAO);
-    // We only need to bind to the VBO (to link it with glVertexAttribPointer), no need to fill it; the VBO's data already contains all we need.
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-    // Game loop
-    while (!glfwWindowShouldClose(window))
-    {
-        // Calculate deltatime of current frame
-        GLfloat currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
-
-        // Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
-        glfwPollEvents();
-        do_movement();
-
-        // Clear the colorbuffer
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // Use cooresponding shader when setting uniforms/drawing objects
-        lightingShader.Use();
-        GLint objectColorLoc = glGetUniformLocation(lightingShader.Program, "objectColor");
-        GLint lightColorLoc  = glGetUniformLocation(lightingShader.Program, "lightColor");
-        GLint lightPosLoc    = glGetUniformLocation(lightingShader.Program, "lightPos");
-        GLint viewPosLoc     = glGetUniformLocation(lightingShader.Program, "viewPos");
-        glUniform3f(objectColorLoc, 1.0f, 1.0f, 1.0f);
-        glUniform3f(lightColorLoc,  1.0f, 1.0f, 1.0f);
-        glUniform3f(lightPosLoc,    lightPos.x, lightPos.y, lightPos.z);
-        glUniform3f(viewPosLoc,     camera.Position.x, camera.Position.y, camera.Position.z);
-
-
-
-        // Create camera transformations
-        glm::mat4 view;
-        view = camera.GetViewMatrix();
-	// view = glm::translate(view, glm::vec3(1.25f, 0.0f, 1.5f));
-        glm::mat4 projection = glm::perspective(camera.Zoom, (GLfloat)w / (GLfloat)h, 0.3f, 100.0f);
-	// projection = glm::rotate(projection, 0.65f, glm::vec3(0.0f, 1.0f, 0.0f));
-        // Get the uniform locations
-        GLint modelLoc = glGetUniformLocation(lightingShader.Program, "model");
-        GLint viewLoc  = glGetUniformLocation(lightingShader.Program,  "view");
-        GLint projLoc  = glGetUniformLocation(lightingShader.Program,  "projection");
-        // Pass the matrices to the shader
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
-        // Draw the container (using container's vertex attributes)
-        glBindVertexArray(containerVAO);
-        glm::mat4 model;
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glBindVertexArray(0);
-
-        // Swap the screen buffers
-        glfwSwapBuffers(window);
+  // draw
+  glPushMatrix();
+    glRotatef(g_rot_angle_x, 0.0, 0.0, 1.0);
+    glRotatef(g_rot_angle_y, 1.0, 0.0, 0.0);
+    //glutSolidSphere(0.04, 20, 20);
+    if (g_shape) {
+      //load shaders before drawing
+      g_shape->Draw();
     }
+  glPopMatrix();
 
-    // Terminate GLFW, clearing any resources allocated by GLFW.
-    glfwTerminate();
-    return 0;
+  glutSwapBuffers();
+  glFlush();
 }
 
-// Is called whenever a key is pressed/released via GLFW
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
+//--------------------------------------------------------- 
+// Number keys 1-7 are used to toggle the iteration count
+//---------------------------------------------------------
+void keyboard(unsigned char key, int x, int y)
 {
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GL_TRUE);
-    if (key >= 0 && key < 1024)
-    {
-        if (action == GLFW_PRESS)
-            keys[key] = true;
-        else if (action == GLFW_RELEASE)
-            keys[key] = false;
+  switch(key) {
+    case '1':
+      g_k_num_iterations = 1;
+      break;
+    case '2':
+      g_k_num_iterations = 2;
+      break;
+    case '3':
+      g_k_num_iterations = 4;
+      break;
+    case '4':
+      g_k_num_iterations = 8;
+      break;
+    case '5':
+      g_k_num_iterations = 16;
+      break;
+    case '6':
+      g_k_num_iterations = 32;
+      break;
+    case '7':
+      g_k_num_iterations = 64;
+      break;
+    default:
+      break;
+  }
+
+  cout << "Smoothing with " << g_k_num_iterations << " iterations." << endl;
+
+  computeLaplacianSmoothedMesh();
+  glutPostRedisplay();
+}
+
+//--------------------------------------------------------- 
+// Mouse click handler
+//---------------------------------------------------------
+void mouseFunc(int button, int state, int x, int y)
+{
+  //printf("mouse func: (%d, %d, %d, %d)\n", button, state, x, y);
+
+  bool clicked = (state == 0);
+  bool released = (state == 1);
+
+  if (clicked) {
+    if (!g_just_clicked) {
+      g_mouse_x_prev = (float)x;
+      g_mouse_y_prev = (float)y;
+      g_just_clicked = true;
     }
+  } else if (released) {
+    g_just_clicked = false;
+  }
 }
 
-void do_movement()
+//--------------------------------------------------------- 
+// Mouse motion handler
+//---------------------------------------------------------
+void motionFunc(int x, int y)
 {
-    // Camera controls
-    if (keys[GLFW_KEY_W])
-        camera.ProcessKeyboard(FORWARD, deltaTime);
-    if (keys[GLFW_KEY_S])
-        camera.ProcessKeyboard(BACKWARD, deltaTime);
-    if (keys[GLFW_KEY_A])
-        camera.ProcessKeyboard(LEFT, deltaTime);
-    if (keys[GLFW_KEY_D])
-        camera.ProcessKeyboard(RIGHT, deltaTime);
+  if (!g_just_clicked) {
+    g_mouse_x_prev = g_mouse_x;
+    g_mouse_y_prev = g_mouse_y;
+  } else {
+    g_just_clicked = false;
+  }
+
+  g_mouse_x = (float)x;
+  g_mouse_y = (float)y;
+
+  float delta_x = -0.25 * (g_mouse_x - g_mouse_x_prev);
+  float delta_y =  0.25 * (g_mouse_y - g_mouse_y_prev);
+
+  g_rot_angle_x += delta_x;
+  g_rot_angle_y += delta_y;
+
+  if (g_rot_angle_x < -360.0) g_rot_angle_x += 360.0;
+  if (g_rot_angle_x > 360.0) g_rot_angle_x -= 360.0;
+  if (g_rot_angle_y < -360.0) g_rot_angle_y += 360.0;
+  if (g_rot_angle_y > 360.0) g_rot_angle_y -= 360.0;
+
+  glutPostRedisplay();
 }
 
-bool firstMouse = true;
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+//--------------------------------------------------------- 
+// Create the mesh and initialize OpenGL state
+//---------------------------------------------------------
+void setupScene()
 {
-    if (firstMouse)
-    {
-        lastX = xpos;
-        lastY = ypos;
-        firstMouse = false;
-    }
+  g_shape = new STShape("objects/painting.obj");
 
-    GLfloat xoffset = xpos - lastX;
-    GLfloat yoffset = lastY - ypos;  // Reversed since y-coordinates go from bottom to left
+  glClearColor(0.0, 0.0, 0.0, 0.0);
 
-    lastX = xpos;
-    lastY = ypos;
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glShadeModel(GL_SMOOTH);
 
-    camera.ProcessMouseMovement(xoffset, yoffset);
+  float light_pos[] = { 2.0, 3.0, 4.0, 1.0 };
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+  glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
+
+  glEnable(GL_DEPTH_TEST);
+
+  // Setup the view of the mesh
+  glMatrixMode(GL_PROJECTION);
+  gluPerspective( 60.0, /* field of view in degrees */
+                  double(g_k_window_width)/double(g_k_window_height), // aspect ratio
+                  0.01,  /* z near */ 
+                  10.0); /* z far */ 
+
+  glMatrixMode(GL_MODELVIEW);
+  gluLookAt(-0.1, 0.16, -5,  /* eye is at (x,y,z) */
+             0.0,  0.1,  0.0,  /* center of world */
+             0.0,  1.0,  0.0);  /* up is in positive Y direction */
 }
 
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+//--------------------------------------------------------- 
+// Entry point
+//---------------------------------------------------------
+int main(int argc, char ** argv)
 {
-    camera.ProcessMouseScroll(yoffset);
-}
+  glutInit(&argc, argv);
+  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+  glutInitWindowSize(g_k_window_width, g_k_window_height);
 
+  glutCreateWindow("CS 148 - HW 5 - Laplace Smoothing");
+
+  glutDisplayFunc(display);
+  glutMouseFunc(mouseFunc);
+  glutKeyboardFunc(keyboard);
+  glutMotionFunc(motionFunc);
+
+  setupScene();
+
+  glutMainLoop();
+
+  return 0;
+}
 
