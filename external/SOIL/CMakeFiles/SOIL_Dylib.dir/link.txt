@@ -1,0 +1,1 @@
+/usr/bin/cc  -fPIC -O3 -DNDEBUG  -shared -Wl,-soname,libSOIL.so.1 -o libSOIL.so.1.07 CMakeFiles/SOIL_Dylib.dir/src/image_helper.c.o CMakeFiles/SOIL_Dylib.dir/src/stb_image_aug.c.o CMakeFiles/SOIL_Dylib.dir/src/image_DXT.c.o CMakeFiles/SOIL_Dylib.dir/src/SOIL.c.o 
