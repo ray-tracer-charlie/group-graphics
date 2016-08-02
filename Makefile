@@ -1,22 +1,25 @@
-CPP = g++
-LD = g++
-CPPFLAGS = -O3 -std=c++11
-LDFLAGS =
-TARGET = group-graphics
-OBJS = main.o
-OS = $(shell uname)
+src = $(wildcard main.cpp)
+obj = $(src:.cpp=.o)
 
+
+LIBRARY_PATHS =
+
+OS = $(shell uname)
 ifeq ($(OS),Darwin)
-	LIB =  -framework OpenGL -framework Cocoa -lGLEW -lglfw3
+	LDFLAGS = -framework Carbon -framework OpenGL -framework GLUT
+	#deleted -lst
 else
-	LIB =  -lGL -lGLEW -lglfw
+	LDFLAGS = -lGL -lGLEW -lglut -lGLU -lglfw -lglee -lassimp -lSOIL
+	#deleted -lst, added -lassimp
+	CXXFLAGS = -std=c++11
 endif
 
-default: $(OBJS)
-	$(LD) $(OBJS) $(LDFLAGS) $(LIB) -o $(TARGET)
+main: $(obj)
+	cd build && cmake ../.
+	g++ -g -o $@ $^ $(LIBRARY_PATHS) $(LDFLAGS)
 
-main.o: main.cpp
-	$(CPP) -c $(CPPFLAGS) main.cpp
-
+.PHONY: clean
 clean:
-	rm -f *.o $(TARGET)
+	rm -f $(obj) main
+
+
