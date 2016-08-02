@@ -1,0 +1,7 @@
+/home/cs148/Desktop/group-graphics/external/glew-cmake/CMakeFiles/libglew_static.dir
+/home/cs148/Desktop/group-graphics/external/assimp/CMakeFiles/uninstall.dir
+/home/cs148/Desktop/group-graphics/external/glfw/docs/CMakeFiles/docs.dir
+/home/cs148/Desktop/group-graphics/external/assimp/code/CMakeFiles/assimp.dir
+/home/cs148/Desktop/group-graphics/external/SOIL/CMakeFiles/SOIL_Static.dir
+/home/cs148/Desktop/group-graphics/external/SOIL/CMakeFiles/SOIL_Dylib.dir
+/home/cs148/Desktop/group-graphics/external/glfw/src/CMakeFiles/glfw.dir
