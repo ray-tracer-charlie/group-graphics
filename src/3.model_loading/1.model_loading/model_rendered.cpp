@@ -50,7 +50,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-    GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "LearnOpenGL", nullptr, nullptr); // Windowed
+    GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "Art Gallery", nullptr, nullptr); // Windowed
     glfwMakeContextCurrent(window);
 
     // Set the required callback functions
@@ -75,7 +75,7 @@ int main()
     Shader shader("shader.vs", "shader.frag");
 
     // Load models
-    Model ourModel(FileSystem::getPath("resources/objects/painting/painting.obj").c_str());
+    Model ourModel(FileSystem::getPath("resources/objects/painting/painting-2.obj").c_str());
 
     // Draw in wireframe
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

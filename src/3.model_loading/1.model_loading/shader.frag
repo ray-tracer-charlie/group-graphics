@@ -25,7 +25,7 @@ void main()
     // Specular
     vec3 viewDir = normalize(viewPos - fs_in.FragPos);
     vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = 0.0;
+    float spec = 0.5;
     vec3 halfwayDir = normalize(lightDir + viewDir);  
     spec = pow(max(dot(normal, halfwayDir), 0.0), 32.0);
     vec3 specular = vec3(0.3) * spec; // assuming bright white light color
