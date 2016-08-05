@@ -30,9 +30,9 @@ void main()
     // Calculate FragPos as the world-space location of position4.
     FragPos = vec3(model * position4);
 
-    // TODO: Figure out which of the two lines below is correct.
+    // Set TexCoords.
     TexCoords = texCoords;
-    //TexCoords = vec2(texCoords.x, 1.0 - texCoords.y);;
     
+    // Set Color.
     Color = color;
 }

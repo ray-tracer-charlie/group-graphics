@@ -24,10 +24,10 @@ void main()
 
     // Set texture-based color.
     vec4 TxtColor = texture(ourTexture1, TexCoords);
-    vec3 TxtColor3;
-    TxtColor3[0] = TxtColor[0];
-    TxtColor3[1] = TxtColor[1];
-    TxtColor3[2] = TxtColor[2];
+    vec3 txtColor3;
+    txtColor3[0] = TxtColor[0];
+    txtColor3[1] = TxtColor[1];
+    txtColor3[2] = TxtColor[2];
 
     // Reference: http://in2gpu.com/2014/06/23/toon-shading-effect-and-simple-contour-detection/
     // Number of lighting levels for toon shading.
@@ -51,19 +51,6 @@ void main()
     
     // Compute dot product (or use 0 if the dot product is negative) as a way to determine the alignment between fragToLightVector and the Normal vector.  The greater the alignment, the stronger the diffusion lighting.  Note that Normal has unit length, from phong.frag.
     float diffuse = max(dot(fragToLightVector, Normal), 0.0);
-    // Discretize diffuse depending on the range in which it falls.
-    if (diffuse < 0.25f) {
-        diffuse = 0.125f;
-    }
-    else if (diffuse < 0.5f) {
-        diffuse = 0.375f;
-    }
-    else if (diffuse < 0.75f) {
-        diffuse = 0.625f;
-    }
-    else {
-        diffuse = 0.875f;
-    }
 
     
     /* Specular lighting */
@@ -92,12 +79,22 @@ void main()
     /* Combine all three lighting effects. */
     // Combine all three effects into a single factor.
     float cumulative = ambient + diffuse + specular;
+
+    // Discretize cumulative depending on the range in which it falls.
+    cumulative = round(cumulative * 4) / 4;
+
     // Calculate impact on light by multiplying this combined factor with lightColor.
     vec3 cumulativeLight = cumulative * lightColor;
-    // Set color by multiplying cumulativeLight with objectColor, and set "w"-term to 1.0f.
-    // FragColor = vec4(cumulativeLight * objectColor, 1.0f);
 
-    // TODO: Replace with below.
-    FragColor = vec4(cumulativeLight * TxtColor3, 1.0f);
+    vec3 toonTxtColor3;
+    toonTxtColor3[0] = round(txtColor3[0] * 3) / 3;
+    toonTxtColor3[1] = round(txtColor3[1] * 3) / 3;
+    toonTxtColor3[2] = round(txtColor3[2] * 3) / 3;
+
+    // Set color by multiplying cumulativeLight with objectColor, and set "w"-term to 1.0f.
+    // Use the object's color
+    // FragColor = vec4(cumulativeLight * ObjectColor, 1.0f);
+    // Use the texture's color
+    FragColor = vec4(cumulativeLight * toonTxtColor3, 1.0f);
 
 }
