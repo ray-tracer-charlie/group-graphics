@@ -32,7 +32,7 @@ void main()
     // **Reference: http://in2gpu.com/2014/06/23/toon-shading-effect-and-simple-contour-detection/
     // **Reference: http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/toon-shader-version-ii/
     // Factor used to discretize levels for toon shading.
-    float threshold = 0.6f;
+    float threshold = 0.2f;
     float colorFactor = 4;
 
     //////////////
@@ -44,7 +44,7 @@ void main()
     /* Ambient lighting */
 
     // Choose a fraction for ambient.
-    float ambient = 0.2f;   
+    float ambient = 0.6f;
 
 
     /* Diffuse lighting */
