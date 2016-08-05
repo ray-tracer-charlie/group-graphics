@@ -15,6 +15,12 @@ uniform vec3 viewPos;
 uniform vec3 lightColor;
 uniform vec3 objectColor;
 
+// **Reference: http://prideout.net/blog/?p=22.
+float step(float edge, float x) {
+    return x < edge ? 0.0 : 1.0;
+}
+
+
 void main()
 {
 
@@ -29,19 +35,22 @@ void main()
     txtColor3[1] = TxtColor[1];
     txtColor3[2] = TxtColor[2];
 
-    // Reference: http://in2gpu.com/2014/06/23/toon-shading-effect-and-simple-contour-detection/
-    // Number of lighting levels for toon shading.
-    int levels = 5;
+    // **Reference: http://in2gpu.com/2014/06/23/toon-shading-effect-and-simple-contour-detection/
+    // **Reference: http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/toon-shader-version-ii/
+    // Factor used to discretize levels for toon shading.
+    float brightnessFactor = 1.5f;
+    float colorFactor = 1.1f;
 
     //////////////
     // LIGHTING //
     //////////////
 
-    // Reference: chuyi@'s HW3 fragment shader code.
+    // **Reference: chuyi@'s HW3 vertex shader code.
+
     /* Ambient lighting */
 
-    // Choose a fraction for ambient: 0.2 (arbitrarily).
-    float ambient = 0.5f;   
+    // Choose a fraction for ambient.
+    float ambient = 0.2f;   
 
 
     /* Diffuse lighting */
@@ -52,14 +61,20 @@ void main()
     // Compute dot product (or use 0 if the dot product is negative) as a way to determine the alignment between fragToLightVector and the Normal vector.  The greater the alignment, the stronger the diffusion lighting.  Note that Normal has unit length, from phong.frag.
     float diffuse = max(dot(fragToLightVector, Normal), 0.0);
 
+    // Modify diffuse for toon shading.
+    // **Reference: http://prideout.net/blog/?p=22.
+    if (diffuse < 0.1) diffuse = 0.0f;
+    else if (diffuse < 0.3) diffuse = 0.3f;
+    else if (diffuse < 0.6) diffuse = 0.6f;
+    else diffuse = 1.0f;
     
     /* Specular lighting */
     
-    // Set scaling factor to be 0.2 (arbitrarily).
-    float specular = 0.8f;
+    // Set scaling factor.
+    float specular = 0.4f;
 
-    // Set a shininess for the object.  LearnOpenGL uses 32, so using it here as well!
-    float shininess = 16;
+    // Set a shininess for the object.
+    float shininess = 8;
     
     // Calculate normalized vector from fragment to view.
     vec3 fragToViewVector = normalize(viewPos - FragPos);
@@ -76,25 +91,25 @@ void main()
     // Scale the specular lighting by this highlight.
     specular *= highlight;
 
+    // Modify specular for toon shading.
+    specular = step(0.5, specular);
+
     /* Combine all three lighting effects. */
     // Combine all three effects into a single factor.
     float cumulative = ambient + diffuse + specular;
 
     // Discretize cumulative depending on the range in which it falls.
-    cumulative = round(cumulative * 4) / 4;
+    cumulative = (cumulative < .45) ? 0 : cumulative;
 
     // Calculate impact on light by multiplying this combined factor with lightColor.
     vec3 cumulativeLight = cumulative * lightColor;
 
     vec3 toonTxtColor3;
-    toonTxtColor3[0] = round(txtColor3[0] * 3) / 3;
-    toonTxtColor3[1] = round(txtColor3[1] * 3) / 3;
-    toonTxtColor3[2] = round(txtColor3[2] * 3) / 3;
+    toonTxtColor3[0] = (txtColor3[0] < 0.4) ? 0 : txtColor3[0];
+    toonTxtColor3[1] = (txtColor3[1] < 0.4) ? 0 : txtColor3[1];
+    toonTxtColor3[2] = (txtColor3[2] < 0.4) ? 0 : txtColor3[2];
 
-    // Set color by multiplying cumulativeLight with objectColor, and set "w"-term to 1.0f.
-    // Use the object's color
-    // FragColor = vec4(cumulativeLight * ObjectColor, 1.0f);
-    // Use the texture's color
+    // Set color by multiplying cumulativeLight with the color from the texture, and set "w"-term to 1.0f.
     FragColor = vec4(cumulativeLight * toonTxtColor3, 1.0f);
 
 }

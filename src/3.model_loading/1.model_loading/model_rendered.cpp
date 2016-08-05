@@ -3,7 +3,6 @@
 /////////////
 
 // Standard libraries
-
 #include <iostream>
 #include <cmath>
 #include <stdio.h>
@@ -21,12 +20,12 @@
 #include <learnopengl/camera.h>
 #include <learnopengl/model.h>
 
-// GLM Mathemtics
+// GLM mathemtics
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-// Other Libs
+// Other libraries
 #include <SOIL.h>
 #include <learnopengl/filesystem.h>
 
@@ -34,7 +33,7 @@
 // Set up world //
 //////////////////
 
-// Reference: HW3 starter code.
+// **Reference: HW3 starter code.
 
 // Function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -42,23 +41,26 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void do_movement();
 
-// Window dimensions
+// Initial window dimensions
 const GLuint WIDTH = 800, HEIGHT = 600;
 
-// Camera
+// Set up camera
 Camera  camera(glm::vec3(0.0f, 0.0f, 3.0f));
 GLfloat lastX  =  WIDTH  / 2.0;
 GLfloat lastY  =  HEIGHT / 2.0;
 bool    keys[1024];
 
-// Light attributes
+// Light position
 glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
 // Deltatime
 GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
 GLfloat lastFrame = 0.0f;  	// Time of last frame
 
-// The MAIN function, from here we start our application and run our Game loop
+//////////
+// Main //
+//////////
+
 int main()
 {
     // Init GLFW
@@ -79,9 +81,6 @@ int main()
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
 
-    // GLFW Options
-    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
     // Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
     glewExperimental = GL_TRUE;
     // Initialize GLEW to setup the OpenGL Function pointers
@@ -96,7 +95,7 @@ int main()
     // OpenGL options
     glEnable(GL_DEPTH_TEST);
 
-    // Setup and compile our shaders
+    // Setup and compile shaders
     Shader paintingShader("shader.vs", "shader.frag");
     Shader roomShader("room-shader.vs", "room-shader.frag");
 
@@ -105,10 +104,10 @@ int main()
     // Set up vertex data (and buffer(s)) and attribute pointers
     GLfloat vertices[] = {
         // Positions          // Colors           // Texture Coords
-         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
-         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
-        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
-        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left 
+         1.5f,  1.5f, 1.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
+         1.5f, -1.5f, 1.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
+        -1.5f, -1.5f, 1.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
+        -1.5f,  1.5f, 1.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left 
     };
 
     GLuint indices[] = {  // Note that we start from 0!
@@ -138,10 +137,10 @@ int main()
     // Set up vertex data (and buffer(s)) and attribute pointers
     GLfloat roomVertices[] = {
         // Positions          // Colors           // Texture Coords
-         1.5f,  1.5f, 1.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
-         1.5f, -1.5f, 1.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
-        -1.5f, -1.5f, 1.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
-        -1.5f,  1.5f, 1.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left 
+         5.5f,  5.5f, 5.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
+         5.5f, -5.5f, 5.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
+        -5.5f, -5.5f, 5.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
+        -5.5f,  5.5f, 5.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left 
     };
 
     GLuint roomIndices[] = {  // Note that we start from 0!
@@ -219,11 +218,13 @@ int main()
     glEnable(GL_TEXTURE_2D);
 
     // Load model
+    // TODO: Replace with plane object.
     Model paintingModel(FileSystem::getPath("resources/objects/painting/painting-2.obj").c_str());
 
     //glDisable(GL_TEXTURE_2D); //disable when loading the room model?
 
     //Load room model
+    // TODO: Replace with an object that combines painting-2 and room-edit.
     Model roomModel(FileSystem::getPath("resources/objects/gallery/room-edit.obj").c_str());
 
     // Game loop
@@ -274,8 +275,9 @@ int main()
         glBindVertexArray(containerVAO);
 
         glm::mat4 model;
-        model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // Translate it down a bit so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// It's a bit too big for our scene, so scale it down
+        // The following line modifies the location of the painting.
+        model = glm::translate(model, glm::vec3(0.0f, -1.5f, 10.0f)); // Translate it down a bit so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(0.6f, 0.6f, 0.6f));	// It's a bit too big for our scene, so scale it down
         glUniformMatrix4fv(glGetUniformLocation(paintingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         paintingModel.Draw(paintingShader);   
 
@@ -286,11 +288,6 @@ int main()
         ///////////////////////////
         /// handle room loading ///
         ///////////////////////////
-
-        // glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // Skip the texturing code for the room.
 
         roomShader.Use();
         GLint objectColorLocRoom = glGetUniformLocation(roomShader.Program, "objectColor");
@@ -322,7 +319,7 @@ int main()
 
         glm::mat4 modelRoom;
         modelRoom = glm::translate(modelRoom, glm::vec3(0.0f, -1.75f, 0.0f)); // Translate it down a bit so it's at the center of the scene
-        modelRoom = glm::scale(modelRoom, glm::vec3(0.2f, 0.2f, 0.2f)); // It's a bit too big for our scene, so scale it down
+        modelRoom = glm::scale(modelRoom, glm::vec3(0.8f, 0.8f, 0.8f)); // It's a bit too big for our scene, so scale it down
         glUniformMatrix4fv(glGetUniformLocation(roomShader.Program, "roomModel"), 1, GL_FALSE, glm::value_ptr(modelRoom));
         roomModel.Draw(roomShader);   
 

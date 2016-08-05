@@ -11,6 +11,8 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+// **Reference: chuyi@'s HW3 vertex shader code.
+
 void main()
 {
     // Since our transformations matrices are mat4s, we append a fourth w-term of 1.0f to position.
@@ -25,4 +27,3 @@ void main()
     // Calculate FragPos as the world-space location of position4.
     FragPos = vec3(model * position4);
 }
-
