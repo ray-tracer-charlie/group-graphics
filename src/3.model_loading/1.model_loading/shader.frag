@@ -52,6 +52,8 @@ void main()
     float gy = dot(sy[0], I[0]) + dot(sy[1], I[1]) + dot(sy[2], I[2]);
 
     float g = sqrt(pow(gx, 2.0)+pow(gy, 2.0));
+    g = smoothstep(0.4, 0.6, g);
+    vec3 edgeColor = vec3(1., 0., 0.2);
 
     // End experimental
 
@@ -64,14 +66,14 @@ void main()
     txtColor3[1] = TxtColor[1];
     txtColor3[2] = TxtColor[2];
 
-    txtColor3 -= vec3(g);
+    //txtColor3 = mix(txtColor3, edgeColor, g);
 
 
     // **Reference: http://in2gpu.com/2014/06/23/toon-shading-effect-and-simple-contour-detection/
     // **Reference: http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/toon-shader-version-ii/
     // Factor used to discretize levels for toon shading.
     float threshold = 0.2f;
-    float colorFactor = 4;
+    float colorFactor = 1.75;
 
     //////////////
     // LIGHTING //
