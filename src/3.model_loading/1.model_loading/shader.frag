@@ -23,57 +23,19 @@ void main()
     ///////////////////////////////////
 
     // Set texture-based color.
-    vec4 TxtColor = texture(ourTexture1, TexCoords);
-
-
-
-    // **Reference: http://computergraphics.stackexchange.com/questions/3646/opengl-glsl-sobel-edge-detection-filter.
-
-    mat3 sx = mat3( 
-        1.0, 2.0, 1.0, 
-        0.0, 0.0, 0.0, 
-       -1.0, -2.0, -1.0 
-    );
-    mat3 sy = mat3( 
-        1.0, 0.0, -1.0, 
-        2.0, 0.0, -2.0, 
-        1.0, 0.0, -1.0 
-    );
-
-    mat3 I;
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            vec3 sample = texelFetch(ourTexture1, ivec2(gl_FragCoord) + ivec2(i-1, j-1), 0).rgb;
-            I[i][j] = length(sample);
-        }
-    }
-    
-    float gx = dot(sx[0], I[0]) + dot(sx[1], I[1]) + dot(sx[2], I[2]); 
-    float gy = dot(sy[0], I[0]) + dot(sy[1], I[1]) + dot(sy[2], I[2]);
-
-    float g = sqrt(pow(gx, 2.0)+pow(gy, 2.0));
-    g = smoothstep(0.4, 0.6, g);
-    vec3 edgeColor = vec3(1., 0., 0.2);
-
-    // End experimental
-
-
-
-
+    vec4 txtColor = texture(ourTexture1, TexCoords);
 
     vec3 txtColor3;
-    txtColor3[0] = TxtColor[0];
-    txtColor3[1] = TxtColor[1];
-    txtColor3[2] = TxtColor[2];
-
-    //txtColor3 = mix(txtColor3, edgeColor, g);
-
+    txtColor3[0] = txtColor[0];
+    txtColor3[1] = txtColor[1];
+    txtColor3[2] = txtColor[2];
 
     // **Reference: http://in2gpu.com/2014/06/23/toon-shading-effect-and-simple-contour-detection/
     // **Reference: http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/toon-shader-version-ii/
     // Factor used to discretize levels for toon shading.
     float threshold = 0.2f;
-    float colorFactor = 1.75;
+    float colorFactor = 1.75f;
+    float lightFactor = 1.75f;
 
     //////////////
     // LIGHTING //
@@ -84,7 +46,7 @@ void main()
     /* Ambient lighting */
 
     // Choose a fraction for ambient.
-    float ambient = 0.6f;
+    float ambient = 3.0f;
 
 
     /* Diffuse lighting */
@@ -126,14 +88,16 @@ void main()
     specular *= highlight;
 
     // Modify specular for toon shading.
-    specular = (specular < threshold) ? 0 : specular;
+    // specular = (specular < threshold) ? 0 : specular;
+    specular = round(specular * lightFactor) / lightFactor;
 
     /* Combine all three lighting effects. */
     // Combine all three effects into a single factor.
     float cumulative = ambient + diffuse + specular;
 
     // Discretize cumulative depending on the range in which it falls.
-    cumulative = (cumulative < threshold) ? 0 : cumulative;
+    // cumulative = (cumulative < threshold) ? 0 : cumulative;
+    cumulative = round(cumulative * lightFactor) / lightFactor;
 
     // Calculate impact on light by multiplying this combined factor with lightColor.
     vec3 cumulativeLight = cumulative * lightColor;
@@ -144,7 +108,39 @@ void main()
     toonTxtColor3[2] = round(txtColor3[2] * colorFactor) / colorFactor;
 
 
+    // **Reference: http://computergraphics.stackexchange.com/questions/3646/opengl-glsl-sobel-edge-detection-filter.
+
+    mat3 sx = mat3( 
+        1.0, 2.0, 1.0, 
+        0.0, 0.0, 0.0, 
+       -1.0, -2.0, -1.0 
+    );
+    mat3 sy = mat3( 
+        1.0, 0.0, -1.0, 
+        2.0, 0.0, -2.0, 
+        1.0, 0.0, -1.0 
+    );
+
+    mat3 I;
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            vec3 sample = texelFetch(ourTexture1, ivec2(FragPos) + ivec2(i-1, j-1), 0).rgb;
+            I[i][j] = length(sample);
+        }
+    }
+    
+    float gx = dot(sx[0], I[0]) + dot(sx[1], I[1]) + dot(sx[2], I[2]); 
+    float gy = dot(sy[0], I[0]) + dot(sy[1], I[1]) + dot(sy[2], I[2]);
+
+    float g = sqrt(pow(gx, 2.0)+pow(gy, 2.0));
+    g = smoothstep(0.4, 0.6, g);
+    vec3 edgeColor = vec3(1., 0., 0.2);
+
+    // End experimental
+
+
+
     // Set color by multiplying cumulativeLight with the color from the texture, and set "w"-term to 1.0f.
-    FragColor = vec4(cumulativeLight * toonTxtColor3, 1.0f);
+    FragColor = vec4(cumulativeLight * toonTxtColor3 - vec3(g), 1.0f);
 
 }
