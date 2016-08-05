@@ -292,7 +292,7 @@ int main()
         GLint lightColorLocRoom  = glGetUniformLocation(roomShader.Program, "lightColor");
         GLint lightPosLocRoom    = glGetUniformLocation(roomShader.Program, "lightPos");
         GLint viewPosLocRoom     = glGetUniformLocation(roomShader.Program, "viewPos");
-        glUniform3f(objectColorLocRoom, 1.0f, 0.5f, 0.31f);
+        glUniform3f(objectColorLocRoom, 1.0f, 1.0f, 1.0f);
         glUniform3f(lightColorLocRoom,  1.0f, 1.0f, 1.0f);
         glUniform3f(lightPosLocRoom,    lightPos.x, lightPos.y, lightPos.z);
         glUniform3f(viewPosLocRoom,     camera.Position.x, camera.Position.y, camera.Position.z);

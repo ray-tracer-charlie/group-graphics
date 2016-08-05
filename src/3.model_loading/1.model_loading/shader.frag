@@ -18,6 +18,40 @@ uniform vec3 objectColor;
 void main()
 {
 
+    // Experimental: Edge detection.
+    float thresh = 0.05;
+
+    vec2 c[9];
+
+    vec2 elem = vec2(-0.0078125f, 0.0078125f);
+    c[0] = elem;
+    elem = vec2( 0.0f,     0.0078125f);
+    c[1] = elem;
+    elem = vec2( 0.0078125f, 0.0078125f);
+    c[2] = elem;
+    elem = vec2(-0.0078125f, 0.0f);
+    c[3] = elem;
+    elem = vec2( 0.0f,       0.0f);
+    c[4] = elem;
+    elem = vec2( 0.0078125f, 0.007f);
+    c[5] = elem;
+    elem = vec2(-0.0078125f,-0.0078125f);
+    c[6] = elem;
+    elem = vec2( 0.0f,    -0.0078125f);
+    c[7] = elem;
+    elem = vec2( 0.0078125f,-0.0078125f);
+    c[8] = elem;
+
+    vec3 col[9];    
+    int i;
+
+    for (i=0; i < 9; i++) {
+      col[i] = texture(ourTexture1, TexCoords.xy + c[i]);
+    }
+
+    // End experimental
+
+
     ///////////////////////////////////
     // SET UP TEXTURE / TOON SHADING //
     ///////////////////////////////////
