@@ -97,7 +97,7 @@ int main()
     glEnable(GL_DEPTH_TEST);
 
     // Setup and compile our shaders
-    Shader lightingShader("shader.vs", "shader.frag");
+    Shader paintingShader("shader.vs", "shader.frag");
     Shader roomShader("room-shader.vs", "room-shader.frag");
 
     // Reference; LearnOpenGL, 1.getting_started code.
@@ -133,6 +133,37 @@ int main()
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     glBindVertexArray(containerVAO);
+
+
+    // Set up vertex data (and buffer(s)) and attribute pointers
+    GLfloat roomVertices[] = {
+        // Positions          // Colors           // Texture Coords
+         1.5f,  1.5f, 1.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
+         1.5f, -1.5f, 1.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
+        -1.5f, -1.5f, 1.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
+        -1.5f,  1.5f, 1.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left 
+    };
+
+    GLuint roomIndices[] = {  // Note that we start from 0!
+        0, 1, 3, // First Triangle
+        1, 2, 3  // Second Triangle
+    };
+
+
+    GLuint roomVBO, roomContainerVAO, roomEBO;
+    glGenVertexArrays(1, &roomContainerVAO);
+    glGenBuffers(1, &roomVBO);
+    glGenBuffers(1, &roomEBO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, roomVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(roomVertices), roomVertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, roomEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(roomIndices), roomIndices, GL_STATIC_DRAW);
+
+    glBindVertexArray(roomContainerVAO);
+
+
     // Position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
@@ -188,7 +219,7 @@ int main()
     glEnable(GL_TEXTURE_2D);
 
     // Load model
-    Model ourModel(FileSystem::getPath("resources/objects/painting/painting-2.obj").c_str());
+    Model paintingModel(FileSystem::getPath("resources/objects/painting/painting-2.obj").c_str());
 
     //glDisable(GL_TEXTURE_2D); //disable when loading the room model?
 
@@ -213,17 +244,15 @@ int main()
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture1);
-        glUniform1i(glGetUniformLocation(lightingShader.Program, "ourTexture1"), 0);
-
-
-        lightingShader.Use();   // <-- Don't forget this one!
+        glUniform1i(glGetUniformLocation(paintingShader.Program, "ourTexture1"), 0);
 
         // Use cooresponding shader when setting uniforms/drawing objects
-        lightingShader.Use();
-        GLint objectColorLoc = glGetUniformLocation(lightingShader.Program, "objectColor");
-        GLint lightColorLoc  = glGetUniformLocation(lightingShader.Program, "lightColor");
-        GLint lightPosLoc    = glGetUniformLocation(lightingShader.Program, "lightPos");
-        GLint viewPosLoc     = glGetUniformLocation(lightingShader.Program, "viewPos");
+        paintingShader.Use();
+
+        GLint objectColorLoc = glGetUniformLocation(paintingShader.Program, "objectColor");
+        GLint lightColorLoc  = glGetUniformLocation(paintingShader.Program, "lightColor");
+        GLint lightPosLoc    = glGetUniformLocation(paintingShader.Program, "lightPos");
+        GLint viewPosLoc     = glGetUniformLocation(paintingShader.Program, "viewPos");
         glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
         glUniform3f(lightColorLoc,  1.0f, 1.0f, 1.0f);
         glUniform3f(lightPosLoc,    lightPos.x, lightPos.y, lightPos.z);
@@ -234,9 +263,9 @@ int main()
         view = camera.GetViewMatrix();
         glm::mat4 projection = glm::perspective(camera.Zoom, (GLfloat)w / (GLfloat)h, 0.1f, 100.0f);
         // Get the uniform locations
-        GLint modelLoc = glGetUniformLocation(lightingShader.Program, "model");
-        GLint viewLoc  = glGetUniformLocation(lightingShader.Program,  "view");
-        GLint projLoc  = glGetUniformLocation(lightingShader.Program,  "projection");
+        GLint modelLoc = glGetUniformLocation(paintingShader.Program, "model");
+        GLint viewLoc  = glGetUniformLocation(paintingShader.Program,  "view");
+        GLint projLoc  = glGetUniformLocation(paintingShader.Program,  "projection");
         // Pass the matrices to the shader
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
@@ -247,8 +276,8 @@ int main()
         glm::mat4 model;
         model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // Translate it down a bit so it's at the center of the scene
         model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// It's a bit too big for our scene, so scale it down
-        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        ourModel.Draw(lightingShader);   
+        glUniformMatrix4fv(glGetUniformLocation(paintingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        paintingModel.Draw(paintingShader);   
 
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
         glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -258,33 +287,48 @@ int main()
         /// handle room loading ///
         ///////////////////////////
 
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        //glDisable(GL_TEXTURE_2D); //disable dog texture when using the room shader?
+        // glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // Skip the texturing code for the room.
 
         roomShader.Use();
-        /*
-        GLint objectColorLocRoom = glGetUniformLocation(roomShader.Program, "objectColorRoom");
-        GLint lightColorLocRoom  = glGetUniformLocation(roomShader.Program, "lightColorRoom");
-        GLint lightPosLocRoom    = glGetUniformLocation(roomShader.Program, "lightPosRoom");
+        GLint objectColorLocRoom = glGetUniformLocation(roomShader.Program, "objectColor");
+        GLint lightColorLocRoom  = glGetUniformLocation(roomShader.Program, "lightColor");
+        GLint lightPosLocRoom    = glGetUniformLocation(roomShader.Program, "lightPos");
+        GLint viewPosLocRoom     = glGetUniformLocation(roomShader.Program, "viewPos");
         glUniform3f(objectColorLocRoom, 1.0f, 0.5f, 0.31f);
         glUniform3f(lightColorLocRoom,  1.0f, 1.0f, 1.0f);
         glUniform3f(lightPosLocRoom,    lightPos.x, lightPos.y, lightPos.z);
-        */
-        // Transformation matrices
-        //glm::mat4 projection = glm::perspective(camera.Zoom, (float)screenWidth/(float)screenHeight, 0.1f, 100.0f);
-        //glm::mat4 view = camera.GetViewMatrix();
-        glUniformMatrix4fv(glGetUniformLocation(roomShader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-        glUniformMatrix4fv(glGetUniformLocation(roomShader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
+        glUniform3f(viewPosLocRoom,     camera.Position.x, camera.Position.y, camera.Position.z);
 
-        // Draw the loaded model
-        //glm::mat4 model2;
-        //model2 = glm::translate(model2, glm::vec3(0.0f, -1.75f, 0.0f)); // Translate it down a bit so it's at the center of the scene
-        //model2 = glm::scale(model2, glm::vec3(0.2f, 0.2f, 0.2f)); // It's a bit too big for our scene, so scale it down
-        glUniformMatrix4fv(glGetUniformLocation(roomShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        
-        roomModel.Draw(roomShader);
+        // Draw the container (using container's vertex attributes)
+        glBindVertexArray(roomContainerVAO);
+
+        // Create camera transformations
+        glm::mat4 roomView;
+        roomView = camera.GetViewMatrix();
+        glm::mat4 roomProjection = glm::perspective(camera.Zoom, (GLfloat)w / (GLfloat)h, 0.1f, 100.0f);
+        // Get the uniform locations
+        GLint roomModelLoc = glGetUniformLocation(roomShader.Program, "model");
+        GLint roomViewLoc  = glGetUniformLocation(roomShader.Program,  "view");
+        GLint roomProjLoc  = glGetUniformLocation(roomShader.Program,  "projection");
+        // Pass the matrices to the shader
+        glUniformMatrix4fv(roomViewLoc, 1, GL_FALSE, glm::value_ptr(roomView));
+        glUniformMatrix4fv(roomProjLoc, 1, GL_FALSE, glm::value_ptr(roomProjection));
+
+        // Draw the container (using container's vertex attributes)
+        glBindVertexArray(roomContainerVAO);
+
+        glm::mat4 modelRoom;
+        modelRoom = glm::translate(modelRoom, glm::vec3(0.0f, -1.75f, 0.0f)); // Translate it down a bit so it's at the center of the scene
+        modelRoom = glm::scale(modelRoom, glm::vec3(0.2f, 0.2f, 0.2f)); // It's a bit too big for our scene, so scale it down
+        glUniformMatrix4fv(glGetUniformLocation(roomShader.Program, "roomModel"), 1, GL_FALSE, glm::value_ptr(modelRoom));
+        roomModel.Draw(roomShader);   
+
+        glUniformMatrix4fv(roomModelLoc, 1, GL_FALSE, glm::value_ptr(modelRoom));
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
 
         // Swap the screen buffers
         glfwSwapBuffers(window);
@@ -332,7 +376,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
         firstMouse = false;
     }
 
-    GLfloat xoffset = xpos - lastX;
+    GLfloat xoffset = 10 * (xpos - lastX);
     GLfloat yoffset = 10 * (lastY - ypos);  // Reversed since y-coordinates go from bottom to left
 
     lastX = xpos;
