@@ -9,6 +9,9 @@ in vec2 TexCoords;
 in vec3 Color;
 
 uniform sampler2D ourTexture1;
+uniform sampler2D ourTexture2;
+uniform sampler2D ourTexture3;
+uniform sampler2D ourTexture4;
 
 uniform vec3 lightPos; 
 uniform vec3 viewPos;
