@@ -98,6 +98,7 @@ int main()
 
     // Setup and compile our shaders
     Shader lightingShader("shader.vs", "shader.frag");
+    Shader roomShader("room-shader.vs", "room-shader.frag");
 
     // Reference; LearnOpenGL, 1.getting_started code.
 
@@ -147,6 +148,7 @@ int main()
     // Finish
     glBindVertexArray(0);
 
+
     ////////////////////
     // Set up texture //
     ////////////////////
@@ -188,6 +190,10 @@ int main()
     // Load model
     Model ourModel(FileSystem::getPath("resources/objects/painting/painting-2.obj").c_str());
 
+    //glDisable(GL_TEXTURE_2D); //disable when loading the room model?
+
+    //Load room model
+    Model roomModel(FileSystem::getPath("resources/objects/gallery/room-edit.obj").c_str());
 
     // Game loop
     while(!glfwWindowShouldClose(window))
@@ -208,6 +214,7 @@ int main()
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture1);
         glUniform1i(glGetUniformLocation(lightingShader.Program, "ourTexture1"), 0);
+
 
         lightingShader.Use();   // <-- Don't forget this one!
 
@@ -246,6 +253,38 @@ int main()
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
+
+        ///////////////////////////
+        /// handle room loading ///
+        ///////////////////////////
+
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        //glDisable(GL_TEXTURE_2D); //disable dog texture when using the room shader?
+
+
+        roomShader.Use();
+        /*
+        GLint objectColorLocRoom = glGetUniformLocation(roomShader.Program, "objectColorRoom");
+        GLint lightColorLocRoom  = glGetUniformLocation(roomShader.Program, "lightColorRoom");
+        GLint lightPosLocRoom    = glGetUniformLocation(roomShader.Program, "lightPosRoom");
+        glUniform3f(objectColorLocRoom, 1.0f, 0.5f, 0.31f);
+        glUniform3f(lightColorLocRoom,  1.0f, 1.0f, 1.0f);
+        glUniform3f(lightPosLocRoom,    lightPos.x, lightPos.y, lightPos.z);
+        */
+        // Transformation matrices
+        //glm::mat4 projection = glm::perspective(camera.Zoom, (float)screenWidth/(float)screenHeight, 0.1f, 100.0f);
+        //glm::mat4 view = camera.GetViewMatrix();
+        glUniformMatrix4fv(glGetUniformLocation(roomShader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+        glUniformMatrix4fv(glGetUniformLocation(roomShader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
+
+        // Draw the loaded model
+        //glm::mat4 model2;
+        //model2 = glm::translate(model2, glm::vec3(0.0f, -1.75f, 0.0f)); // Translate it down a bit so it's at the center of the scene
+        //model2 = glm::scale(model2, glm::vec3(0.2f, 0.2f, 0.2f)); // It's a bit too big for our scene, so scale it down
+        glUniformMatrix4fv(glGetUniformLocation(roomShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        
+        roomModel.Draw(roomShader);
 
         // Swap the screen buffers
         glfwSwapBuffers(window);

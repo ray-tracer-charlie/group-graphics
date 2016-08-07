@@ -1,0 +1,12 @@
+# Blender MTL File: 'test-cube.blend'
+# Material Count: 1
+
+newmtl Material
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.060648 0.041412 0.640000
+Ks 0.361528 0.500000 0.500000
+Ke 0.037905 0.025882 0.400000
+Ni 1.000000
+d 1.000000
+illum 2
