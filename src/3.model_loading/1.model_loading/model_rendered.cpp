@@ -218,14 +218,22 @@ int main()
     glEnable(GL_TEXTURE_2D);
 
     // Load model
+<<<<<<< HEAD
     // TODO: Replace with plane object.
     Model paintingModel(FileSystem::getPath("resources/objects/painting/painting-2.obj").c_str());
+=======
+    Model paintingModel(FileSystem::getPath("resources/objects/painting/frame-plane-2.obj").c_str());
+>>>>>>> add obj files
 
     //glDisable(GL_TEXTURE_2D); //disable when loading the room model?
 
     //Load room model
+<<<<<<< HEAD
     // TODO: Replace with an object that combines painting-2 and room-edit.
     Model roomModel(FileSystem::getPath("resources/objects/gallery/room-edit.obj").c_str());
+=======
+    Model roomModel(FileSystem::getPath("resources/objects/gallery/gallery-room-2.obj").c_str());
+>>>>>>> add obj files
 
     // Game loop
     while(!glfwWindowShouldClose(window))
