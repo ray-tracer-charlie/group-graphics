@@ -17,7 +17,8 @@ uniform mat4 projection;
 
 void main()
 {	
-    // Reference: chuyi@'s HW3 vertex shader code.
+    // **Reference: chuyi@'s HW3 vertex shader code.
+    
     // Since our transformations matrices are mat4s, we append a fourth w-term of 1.0f to position.
     vec4 position4 = vec4(position, 1.0f);
 

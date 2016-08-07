@@ -11,11 +11,13 @@ uniform vec3 viewPos;
 uniform vec3 lightColor;
 uniform vec3 objectColor;
 
+// **Reference: chuyi@'s HW3 vertex shader code.
+
 void main()
 {   
     /* Ambient lighting */
 
-    // Choose a fraction for ambient: 0.2 (arbitrarily).
+    // Choose a fraction for ambient.
     float ambient = 0.1f;  	
 
 
@@ -24,16 +26,16 @@ void main()
     // Calculate normalized vector from fragment to light.
     vec3 fragToLightVector = normalize(lightPos - FragPos);
     
-    // Compute dot product (or use 0 if the dot product is negative) as a way to determine the alignment between fragToLightVector and the Normal vector.  The greater the alignment, the stronger the diffusion lighting.  Note that Normal has unit length, from phong.frag.
+    // Compute dot product (or use 0 if the dot product is negative) as a way to determine the alignment between fragToLightVector and the Normal vector.  The greater the alignment, the stronger the diffusion lighting.  Note that Normal already has unit length.
     float diffuse = max(dot(fragToLightVector, Normal), 0.0);
 
     
     /* Specular lighting */
     
-    // Set scaling factor to be 0.2 (arbitrarily).
+    // Set scaling factor.
     float specular = 0.8f;
 
-    // Set a shininess for the object.  LearnOpenGL uses 32, so using it here as well!
+    // Set a shininess for the object.
     float shininess = 16;
     
     // Calculate normalized vector from fragment to view.
