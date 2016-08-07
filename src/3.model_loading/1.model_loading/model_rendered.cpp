@@ -196,7 +196,7 @@ int main()
     // Load, create texture and generate mipmaps
     int width, height;
 
-    unsigned char* image = SOIL_load_image(FileSystem::getPath("resources/images/dog.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+    unsigned char* image = SOIL_load_image(FileSystem::getPath("resources/images/phelps.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
     glGenerateMipmap(GL_TEXTURE_2D);
@@ -218,22 +218,9 @@ int main()
     glEnable(GL_TEXTURE_2D);
 
     // Load model
-<<<<<<< HEAD
-    // TODO: Replace with plane object.
-    Model paintingModel(FileSystem::getPath("resources/objects/painting/painting-2.obj").c_str());
-=======
     Model paintingModel(FileSystem::getPath("resources/objects/painting/frame-plane-2.obj").c_str());
->>>>>>> add obj files
-
-    //glDisable(GL_TEXTURE_2D); //disable when loading the room model?
-
     //Load room model
-<<<<<<< HEAD
-    // TODO: Replace with an object that combines painting-2 and room-edit.
-    Model roomModel(FileSystem::getPath("resources/objects/gallery/room-edit.obj").c_str());
-=======
     Model roomModel(FileSystem::getPath("resources/objects/gallery/gallery-room-2.obj").c_str());
->>>>>>> add obj files
 
     // Game loop
     while(!glfwWindowShouldClose(window))
@@ -284,7 +271,7 @@ int main()
 
         glm::mat4 model;
         // The following line modifies the location of the painting.
-        model = glm::translate(model, glm::vec3(0.0f, -1.5f, 10.0f)); // Translate it down a bit so it's at the center of the scene
+        model = glm::translate(model, glm::vec3(5.0f, -4.5f, 10.0f)); // Translate it down a bit so it's at the center of the scene
         model = glm::scale(model, glm::vec3(0.6f, 0.6f, 0.6f));	// It's a bit too big for our scene, so scale it down
         glUniformMatrix4fv(glGetUniformLocation(paintingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         paintingModel.Draw(paintingShader);   

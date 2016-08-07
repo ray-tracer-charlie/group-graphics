@@ -15,12 +15,6 @@ uniform vec3 viewPos;
 uniform vec3 lightColor;
 uniform vec3 objectColor;
 
-// **Reference: http://prideout.net/blog/?p=22.
-float step(float edge, float x) {
-    return x < edge ? 0.0 : 1.0;
-}
-
-
 void main()
 {
 
@@ -38,8 +32,8 @@ void main()
     // **Reference: http://in2gpu.com/2014/06/23/toon-shading-effect-and-simple-contour-detection/
     // **Reference: http://www.lighthouse3d.com/tutorials/glsl-12-tutorial/toon-shader-version-ii/
     // Factor used to discretize levels for toon shading.
-    float brightnessFactor = 1.5f;
-    float colorFactor = 1.1f;
+    float threshold = 0.2f;
+    float colorFactor = 4;
 
     //////////////
     // LIGHTING //
@@ -50,7 +44,7 @@ void main()
     /* Ambient lighting */
 
     // Choose a fraction for ambient.
-    float ambient = 0.2f;   
+    float ambient = 0.6f;
 
 
     /* Diffuse lighting */
@@ -92,22 +86,22 @@ void main()
     specular *= highlight;
 
     // Modify specular for toon shading.
-    specular = step(0.5, specular);
+    specular = (specular < threshold) ? 0 : specular;
 
     /* Combine all three lighting effects. */
     // Combine all three effects into a single factor.
     float cumulative = ambient + diffuse + specular;
 
     // Discretize cumulative depending on the range in which it falls.
-    cumulative = (cumulative < .45) ? 0 : cumulative;
+    cumulative = (cumulative < threshold) ? 0 : cumulative;
 
     // Calculate impact on light by multiplying this combined factor with lightColor.
     vec3 cumulativeLight = cumulative * lightColor;
 
     vec3 toonTxtColor3;
-    toonTxtColor3[0] = (txtColor3[0] < 0.4) ? 0 : txtColor3[0];
-    toonTxtColor3[1] = (txtColor3[1] < 0.4) ? 0 : txtColor3[1];
-    toonTxtColor3[2] = (txtColor3[2] < 0.4) ? 0 : txtColor3[2];
+    toonTxtColor3[0] = round(txtColor3[0] * colorFactor) / colorFactor;
+    toonTxtColor3[1] = round(txtColor3[1] * colorFactor) / colorFactor;
+    toonTxtColor3[2] = round(txtColor3[2] * colorFactor) / colorFactor;
 
     // Set color by multiplying cumulativeLight with the color from the texture, and set "w"-term to 1.0f.
     FragColor = vec4(cumulativeLight * toonTxtColor3, 1.0f);
