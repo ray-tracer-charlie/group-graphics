@@ -294,12 +294,12 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     }
 
     GLfloat xoffset = xpos - lastX;
-    GLfloat yoffset = lastY - ypos;  // Reversed since y-coordinates go from bottom to left
+    GLfloat yoffset = 10 * (lastY - ypos);  // Reversed since y-coordinates go from bottom to left
 
     lastX = xpos;
     lastY = ypos;
 
-    camera.ProcessMouseMovement(xoffset, yoffset);
+    camera.ProcessMouseMovement(xoffset / 5, yoffset / 5);
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
