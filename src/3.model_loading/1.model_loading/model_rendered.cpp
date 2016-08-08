@@ -54,8 +54,8 @@ bool    keys[1024];
 glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
 // Deltatime
-GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
-GLfloat lastFrame = 0.0f;  	// Time of last frame
+GLfloat deltaTime = 0.0f;   // Time between current frame and last frame
+GLfloat lastFrame = 0.0f;   // Time of last frame
 
 //////////
 // Main //
@@ -107,7 +107,7 @@ int main()
          1.5f,  1.5f, 1.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
          1.5f, -1.5f, 1.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
         -1.5f, -1.5f, 1.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
-        -1.5f,  1.5f, 1.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left 
+        -1.5f,  1.5f, 1.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left
     };
 
     GLuint indices[] = {  // Note that we start from 0!
@@ -140,7 +140,7 @@ int main()
          5.5f,  5.5f, 5.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
          5.5f, -5.5f, 5.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
         -5.5f, -5.5f, 5.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
-        -5.5f,  5.5f, 5.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left 
+        -5.5f,  5.5f, 5.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left
     };
 
     GLuint roomIndices[] = {  // Note that we start from 0!
@@ -219,9 +219,6 @@ int main()
 
     // Load model
     Model paintingModel(FileSystem::getPath("resources/objects/painting/frame-plane-2.obj").c_str());
-
-    //glDisable(GL_TEXTURE_2D); //disable when loading the room model?
-
     //Load room model
     Model roomModel(FileSystem::getPath("resources/objects/gallery/gallery-room-2.obj").c_str());
 
@@ -252,7 +249,7 @@ int main()
         GLint lightColorLoc  = glGetUniformLocation(paintingShader.Program, "lightColor");
         GLint lightPosLoc    = glGetUniformLocation(paintingShader.Program, "lightPos");
         GLint viewPosLoc     = glGetUniformLocation(paintingShader.Program, "viewPos");
-        glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
+        glUniform3f(objectColorLoc, 1.0f, 1.0f, 1.0f);
         glUniform3f(lightColorLoc,  1.0f, 1.0f, 1.0f);
         glUniform3f(lightPosLoc,    lightPos.x, lightPos.y, lightPos.z);
         glUniform3f(viewPosLoc,     camera.Position.x, camera.Position.y, camera.Position.z);
@@ -274,10 +271,10 @@ int main()
 
         glm::mat4 model;
         // The following line modifies the location of the painting.
-        model = glm::translate(model, glm::vec3(5.0f, -4.5f, 10.0f)); // Translate it down a bit so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(0.6f, 0.6f, 0.6f));	// It's a bit too big for our scene, so scale it down
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // Translate it down a bit so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(0.6f, 0.6f, 0.6f)); // It's a bit too big for our scene, so scale it down
         glUniformMatrix4fv(glGetUniformLocation(paintingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        paintingModel.Draw(paintingShader);   
+        paintingModel.Draw(paintingShader);
 
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
         glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -292,7 +289,7 @@ int main()
         GLint lightColorLocRoom  = glGetUniformLocation(roomShader.Program, "lightColor");
         GLint lightPosLocRoom    = glGetUniformLocation(roomShader.Program, "lightPos");
         GLint viewPosLocRoom     = glGetUniformLocation(roomShader.Program, "viewPos");
-        glUniform3f(objectColorLocRoom, 1.0f, 0.5f, 0.31f);
+        glUniform3f(objectColorLocRoom, 1.0f, 1.0f, 1.0f);
         glUniform3f(lightColorLocRoom,  1.0f, 1.0f, 1.0f);
         glUniform3f(lightPosLocRoom,    lightPos.x, lightPos.y, lightPos.z);
         glUniform3f(viewPosLocRoom,     camera.Position.x, camera.Position.y, camera.Position.z);
@@ -316,10 +313,10 @@ int main()
         glBindVertexArray(roomContainerVAO);
 
         glm::mat4 modelRoom;
-        modelRoom = glm::translate(modelRoom, glm::vec3(0.0f, -1.75f, 0.0f)); // Translate it down a bit so it's at the center of the scene
-        modelRoom = glm::scale(modelRoom, glm::vec3(0.8f, 0.8f, 0.8f)); // It's a bit too big for our scene, so scale it down
+        modelRoom = glm::translate(modelRoom, glm::vec3(0.0f, 0.0f, 0.0f)); // Translate it down a bit so it's at the center of the scene
+        modelRoom = glm::scale(modelRoom, glm::vec3(1.0f, 1.0f, 1.0f)); // It's a bit too big for our scene, so scale it down
         glUniformMatrix4fv(glGetUniformLocation(roomShader.Program, "roomModel"), 1, GL_FALSE, glm::value_ptr(modelRoom));
-        roomModel.Draw(roomShader);   
+        roomModel.Draw(roomShader);
 
         glUniformMatrix4fv(roomModelLoc, 1, GL_FALSE, glm::value_ptr(modelRoom));
         glDrawArrays(GL_TRIANGLES, 0, 36);
