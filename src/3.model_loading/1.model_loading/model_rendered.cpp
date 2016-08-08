@@ -271,8 +271,8 @@ int main()
 
         glm::mat4 model;
         // The following line modifies the location of the painting.
-        model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f)); // Translate it down a bit so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(0.6f, 0.6f, 0.6f)); // It's a bit too big for our scene, so scale it down
+        model = glm::translate(model, glm::vec3(0.12f, 0.4f, -6.04f)); // Translate it down a bit so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
         glUniformMatrix4fv(glGetUniformLocation(paintingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         paintingModel.Draw(paintingShader);
 
