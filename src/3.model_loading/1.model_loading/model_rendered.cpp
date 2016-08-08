@@ -219,6 +219,9 @@ int main()
 
     // Load model
     Model paintingModel(FileSystem::getPath("resources/objects/painting/frame-plane-2.obj").c_str());
+
+    //glDisable(GL_TEXTURE_2D); //disable when loading the room model?
+
     //Load room model
     Model roomModel(FileSystem::getPath("resources/objects/gallery/gallery-room-2.obj").c_str());
 
