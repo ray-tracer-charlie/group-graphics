@@ -10,6 +10,7 @@ uniform vec3 lightPos;
 uniform vec3 viewPos;
 uniform vec3 lightColor;
 uniform vec3 objectColor;
+uniform vec3 tilelightPos;
 
 // **Reference: chuyi@'s HW3 vertex shader code.
 
@@ -18,14 +19,13 @@ void main()
     /* Ambient lighting */
 
     // Choose a fraction for ambient.
-    float ambient = 0.1f;  	
+    float ambient = 0.2f;  	
 
 
     /* Diffuse lighting */
     
     // Calculate normalized vector from fragment to light.
     vec3 fragToLightVector = normalize(lightPos - FragPos);
-    
     // Compute dot product (or use 0 if the dot product is negative) as a way to determine the alignment between fragToLightVector and the Normal vector.  The greater the alignment, the stronger the diffusion lighting.  Note that Normal already has unit length.
     float diffuse = max(dot(fragToLightVector, Normal), 0.0);
 
@@ -33,10 +33,10 @@ void main()
     /* Specular lighting */
     
     // Set scaling factor.
-    float specular = 0.8f;
+    float specular = 0.05f;
 
     // Set a shininess for the object.
-    float shininess = 16;
+    float shininess = 4;
     
     // Calculate normalized vector from fragment to view.
     vec3 fragToViewVector = normalize(viewPos - FragPos);
@@ -60,4 +60,4 @@ void main()
     vec3 cumulativeLight = cumulative * lightColor;
     // Set color by multiplying cumulativeLight with objectColor, and set "w"-term to 1.0f.
     color = vec4(cumulativeLight * objectColor, 1.0f);
-} 
+}

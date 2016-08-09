@@ -12,6 +12,8 @@ uniform sampler2D ourTexture1;
 uniform sampler2D ourTexture2;
 uniform sampler2D ourTexture3;
 uniform sampler2D ourTexture4;
+uniform sampler2D ourTexture5;
+uniform sampler2D ourTexture6;
 
 uniform vec3 lightPos; 
 uniform vec3 viewPos;
