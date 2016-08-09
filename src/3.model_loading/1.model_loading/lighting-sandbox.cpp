@@ -1,3 +1,5 @@
+ /*
+
  //ceiling tile lights
 glm::vec3 tilelightPos[] = {
     //right side
@@ -31,6 +33,7 @@ glm::vec3 spotlightPos[] = {
     glm::vec3(-12.0f, 3.0f, 2.0f), //painting 5
     glm::vec3(10.90f, 3.0f, 2.0f) //painting 6
 };
+*/
 
  /* Tile Lights */
         //tile lights
@@ -122,6 +125,7 @@ glm::vec3 spotlightPos[] = {
 
         /* Room Shader - Fragment Shader */
 
+/*
 #version 330 core
 out vec4 color;
 
@@ -139,9 +143,10 @@ uniform vec3 objectColor;
 
 uniform TileLight tileLights[14];
 //uniform vec3 tilelightPos;
+*/
 
 // **Reference: chuyi@'s HW3 vertex shader code.
-
+/*
 void main()
 {   
     
@@ -149,21 +154,20 @@ void main()
 
     for(int i = 0; i < 14; i++) {
 
-    /* Ambient lighting */
+
 
     // Choose a fraction for ambient.
     float ambient = 0.2f;   
 
 
-    /* Diffuse lighting */
+
     
     // Calculate normalized vector from fragment to light.
     vec3 fragToLightVector = normalize(tilelightPos[i] - FragPos);
     // Compute dot product (or use 0 if the dot product is negative) as a way to determine the alignment between fragToLightVector and the Normal vector.  The greater the alignment, the stronger the diffusion lighting.  Note that Normal already has unit length.
     float diffuse = max(dot(fragToLightVector, Normal), 0.0);
 
-    
-    /* Specular lighting */
+
     
     // Set scaling factor.
     float specular = 0.1f;
@@ -186,7 +190,7 @@ void main()
     // Scale the specular lighting by this highlight.
     specular *= highlight;
 
-    /* Combine all three lighting effects. */
+
     // Combine all three effects into a single factor.
     float cumulative = ambient + diffuse + specular;
     // Calculate impact on light by multiplying this combined factor with lightColor.
@@ -197,3 +201,4 @@ void main()
     
     color = vec4(result, 1.0f)
 }
+*/
