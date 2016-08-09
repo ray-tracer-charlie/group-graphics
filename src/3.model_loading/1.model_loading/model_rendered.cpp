@@ -217,16 +217,21 @@ int main()
     // Set up textures
     glEnable(GL_TEXTURE_2D);
 
+    // TODO: Remove.
     std::cout << "check point 1" << std::endl;
+
     // Load model
     Model paintingModel(FileSystem::getPath("resources/objects/painting/frame-plane-2.obj").c_str());
 
-        std::cout << "check point 1.5" << std::endl;
+    // TODO: Remove.
+    std::cout << "check point 1.5" << std::endl;
 
     //Load room model
     Model roomModel(FileSystem::getPath("resources/objects/gallery/gallery-room-2.obj").c_str());
 
+    // TODO: Remove.
     std::cout << "check point 2" << std::endl;
+
     // Game loop
     while(!glfwWindowShouldClose(window))
     {
