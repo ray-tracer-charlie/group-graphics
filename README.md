@@ -5,6 +5,8 @@ Charles Huyi, Ross Thorburn, Adam Behrens
 
 ## Building in the VM
 -Add build directory
+
 -Run cmake ../. from build directory
+
 -Run make
 
