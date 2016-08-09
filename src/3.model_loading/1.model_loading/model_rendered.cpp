@@ -224,7 +224,7 @@ int main()
         std::cout << "check point 1.5" << std::endl;
 
     //Load room model
-    Model roomModel(FileSystem::getPath("resources/objects/test/basic-objects-textured.obj").c_str());
+    Model roomModel(FileSystem::getPath("resources/objects/gallery/gallery-room-2.obj").c_str());
 
     std::cout << "check point 2" << std::endl;
     // Game loop
