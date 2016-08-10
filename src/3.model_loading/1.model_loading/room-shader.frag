@@ -5,6 +5,17 @@ out vec4 color;
 
 in vec3 FragPos;  
 in vec3 Normal;  
+in vec2 TexCoords;
+in vec3 Color;
+
+uniform sampler2D ourTexture1;
+uniform sampler2D ourTexture2;
+uniform sampler2D ourTexture3;
+uniform sampler2D ourTexture4;
+uniform sampler2D ourTexture5;
+uniform sampler2D ourTexture6;
+uniform sampler2D floorTexture;
+
   
 uniform vec3 lightPos; 
 uniform vec3 viewPos;
@@ -41,6 +52,14 @@ void main()
     vec3 result;
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
+
+    // Set texture-based color.
+    vec4 txtColor = texture(ourTexture1, TexCoords);
+
+    vec3 txtColor3;
+    txtColor3[0] = txtColor[0];
+    txtColor3[1] = txtColor[1];
+    txtColor3[2] = txtColor[2];
 
     // cycle through and calculate the light from each spotlight
 /*
@@ -105,7 +124,7 @@ vec3 CalcTileLight(TileLight light, vec3 Normal, vec3 FragPos, vec3 viewDir)
     vec3 cumulativeLight = cumulative * lightColor;
     // Set color by multiplying cumulativeLight with objectColor, and set "w"-term to 1.0f.
     
-    return (cumulativeLight * objectColor);
+    return (cumulativeLight * txtColor3);
 }
 
 /*

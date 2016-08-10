@@ -147,7 +147,12 @@ int main()
     Shader paintingShader5("shader5.vs", "shader5.frag");
     Shader paintingShader6("shader6.vs", "shader6.frag");
     Shader roomShader("room-shader.vs", "room-shader.frag");
+<<<<<<< HEAD
     Shader lightShader("light-shader.vs", "light-shader.frag");
+=======
+    Shader floorShader("floor-shader.vs", "floor-shader.frag"); 
+
+>>>>>>> Ross commit wed - floor shaders, room shader, textures x2w
 
 
     ///////////////////////////////
@@ -392,6 +397,41 @@ int main()
 
     */
 
+
+    /* FLOOR */ 
+    //Set up
+
+     /* Room */
+    // Set up vertex data (and buffer(s)) and attribute pointers
+    GLfloat floorVertices[] = {
+        // Positions          // Colors           // Texture Coords
+         5.5f,  5.5f, 5.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
+         5.5f, -5.5f, 5.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
+        -5.5f, -5.5f, 5.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
+        -5.5f,  5.5f, 5.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left
+    };
+
+    GLuint floorIndices[] = {  // Note that we start from 0!
+        0, 1, 3, // First Triangle
+        1, 2, 3  // Second Triangle
+    };
+
+
+    GLuint floorVBO, floorContainerVAO, floorEBO;
+    glGenVertexArrays(1, &floorContainerVAO);
+    glGenBuffers(1, &floorVBO);
+    glGenBuffers(1, &floorEBO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, floorVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(floorVertices), floorVertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, floorEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(floorIndices), floorIndices, GL_STATIC_DRAW);
+
+    glBindVertexArray(floorContainerVAO);
+
+
+
     // Position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
@@ -419,8 +459,13 @@ int main()
     GLuint texture4;
     GLuint texture5;
     GLuint texture6;
+<<<<<<< HEAD
     //GLuint textureLighting;
 
+=======
+    GLuint floortexture;
+    GLuint roomtexture;
+>>>>>>> Ross commit wed - floor shaders, room shader, textures x2w
 
     /* Texture 1 */
     glGenTextures(1, &texture1);
@@ -524,25 +569,39 @@ int main()
     SOIL_free_image_data(image6);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    /* Lighting Texture */
-    /*
-    glGenTextures(1, &textureLighting);
-    glBindTexture(GL_TEXTURE_2D, textureLighting); // All upcoming GL_TEXTURE_2D operations now have effect on our texture object
+    /* Floor Texture*/
+    glGenTextures(1, &floortexture);
+    glBindTexture(GL_TEXTURE_2D, floortexture);
     // Set our texture parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);   // Set texture wrapping to GL_REPEAT
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     // Set texture filtering
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // Load, create texture and generate mipmaps
-
-    unsigned char* imageLighting = SOIL_load_image(FileSystem::getPath("resources/images/white-light.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, imageLighting);
+    unsigned char* image7 = SOIL_load_image(FileSystem::getPath("resources/images/floor.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image7);
     glGenerateMipmap(GL_TEXTURE_2D);
-    SOIL_free_image_data(imageLighting);
-    glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
-    */
+    SOIL_free_image_data(image7);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    /* Room Texture*/
+    glGenTextures(1, &roomtexture);
+    glBindTexture(GL_TEXTURE_2D, roomtexture);
+    // Set our texture parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // Set texture filtering
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // Load, create texture and generate mipmaps
+    unsigned char* image8 = SOIL_load_image(FileSystem::getPath("resources/images/floor.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image8);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    SOIL_free_image_data(image8);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+
 
     //////////////////
     // Set up light //
@@ -575,8 +634,8 @@ int main()
     //Load room model
     Model roomModel(FileSystem::getPath("resources/objects/gallery/gallery-room-2-trophy.obj").c_str());
 
-    //Load light model
-    //Model lightingModel(FileSystem::getPath("resources/objects/light/light-orb.obj").c_str());
+    //Load floor
+    Model floorModel(FileSystem::getPath("resources/objects/painting/frame-plane-2.obj").c_str());
 
 
     ///////////////
@@ -834,7 +893,7 @@ int main()
         glUniform1i(glGetUniformLocation(paintingShader6.Program, "ourTexture6"), 0);
 
         // Use cooresponding shader when setting uniforms/drawing objects
-        paintingShader4.Use();
+        paintingShader6.Use();
 
         GLint objectColorLoc6 = glGetUniformLocation(paintingShader6.Program, "objectColor");
         GLint lightColorLoc6  = glGetUniformLocation(paintingShader6.Program, "lightColor");
@@ -850,9 +909,9 @@ int main()
         view6 = camera.GetViewMatrix();
         glm::mat4 projection6 = glm::perspective(camera.Zoom, (GLfloat)w / (GLfloat)h, 0.1f, 100.0f);
         // Get the uniform locations
-        GLint modelLoc6 = glGetUniformLocation(paintingShader4.Program, "model");
-        GLint viewLoc6  = glGetUniformLocation(paintingShader4.Program,  "view");
-        GLint projLoc6  = glGetUniformLocation(paintingShader4.Program,  "projection");
+        GLint modelLoc6 = glGetUniformLocation(paintingShader6.Program, "model");
+        GLint viewLoc6  = glGetUniformLocation(paintingShader6.Program,  "view");
+        GLint projLoc6  = glGetUniformLocation(paintingShader6.Program,  "projection");
         // Pass the matrices to the shader
         glUniformMatrix4fv(viewLoc6, 1, GL_FALSE, glm::value_ptr(view6));
         glUniformMatrix4fv(projLoc6, 1, GL_FALSE, glm::value_ptr(projection6));
@@ -873,7 +932,58 @@ int main()
         glBindVertexArray(0);
 
 
+
+        /*FLOOR */
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, floortexture);
+        glUniform1i(glGetUniformLocation(floorShader.Program, "floorTexture"), 0);
+
+        // Use cooresponding shader when setting uniforms/drawing objects
+        floorShader.Use();
+
+        GLint objectColorLocFloor = glGetUniformLocation(floorShader.Program, "objectColor");
+        GLint lightColorLocFloor  = glGetUniformLocation(floorShader.Program, "lightColor");
+        GLint lightPosLocFloor    = glGetUniformLocation(floorShader.Program, "lightPos");
+        GLint viewPosLocFloor     = glGetUniformLocation(floorShader.Program, "viewPos");
+        glUniform3f(objectColorLocFloor, 1.0f, 1.0f, 1.0f);
+        glUniform3f(lightColorLocFloor,  1.0f, 1.0f, 1.0f);
+        glUniform3f(lightPosLocFloor,    lightPos.x, lightPos.y, lightPos.z);
+        glUniform3f(viewPosLocFloor,     camera.Position.x, camera.Position.y, camera.Position.z);
+
+        // Create camera transformations
+        glm::mat4 floorView;
+        floorView = camera.GetViewMatrix();
+        glm::mat4 floorProjection = glm::perspective(camera.Zoom, (GLfloat)w / (GLfloat)h, 0.1f, 100.0f);
+        // Get the uniform locations
+        GLint floorModelLoc = glGetUniformLocation(floorShader.Program, "model");
+        GLint floorViewLoc = glGetUniformLocation(floorShader.Program,  "view");
+        GLint floorProjLoc = glGetUniformLocation(floorShader.Program,  "projection");
+        // Pass the matrices to the shader
+        glUniformMatrix4fv(floorViewLoc, 1, GL_FALSE, glm::value_ptr(floorView));
+        glUniformMatrix4fv(floorProjLoc, 1, GL_FALSE, glm::value_ptr(floorProjection));
+
+        // Draw the container (using container's vertex attributes)
+        glBindVertexArray(floorContainerVAO);
+
+        glm::mat4 modelFloor;
+        // The following line modifies the location of the painting.
+         //rotate around the y
+        modelFloor = glm::rotate(modelFloor, (glm::mediump_float)90, glm::vec3(0.0f, 1.0f, 0.0f));
+        modelFloor = glm::translate(modelFloor, glm::vec3(11.90f, 0.2f, 2.0f)); // Translate it down a bit so it's at the center of the scene
+        modelFloor = glm::scale(modelFloor, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
+
+        glUniformMatrix4fv(glGetUniformLocation(floorShader.Program, "floormodel"), 1, GL_FALSE, glm::value_ptr(modelFloor));
+        floorModel.Draw(floorShader);
+
+        glUniformMatrix4fv(floorModelLoc, 1, GL_FALSE, glm::value_ptr(modelFloor));
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+
+
         /* Room */
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, roomtexture);
+        glUniform1i(glGetUniformLocation(paintingShader6.Program, "roomTexture"), 0);
 
         roomShader.Use();
         GLint objectColorLocRoom = glGetUniformLocation(roomShader.Program, "objectColor");
