@@ -1,4 +1,4 @@
-// Fragment Shader 4
+// Light Shader
 
 #version 330 core
 out vec4 FragColor;
@@ -14,7 +14,8 @@ uniform sampler2D ourTexture3;
 uniform sampler2D ourTexture4;
 uniform sampler2D ourTexture5;
 uniform sampler2D ourTexture6;
-uniform sampler2D ourTextureTile;
+
+uniform sampler2D ourTextureLighting;
 
 uniform vec3 lightPos; 
 uniform vec3 viewPos;
@@ -29,7 +30,7 @@ void main()
     ///////////////////////////////////
 
     // Set texture-based color.
-    vec4 txtColor = texture(ourTextureTile, TexCoords);
+    vec4 txtColor = texture(ourTextureLighting, TexCoords);
 
     vec3 txtColor3;
     txtColor3[0] = txtColor[0];
@@ -54,7 +55,7 @@ void main()
     /* Ambient lighting */
 
     // Choose a fraction for ambient.
-    float ambient = 2.0f;
+    float ambient = .8f;
 
 
     /* Diffuse lighting */
@@ -132,7 +133,7 @@ void main()
     mat3 I;
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-            vec3 sample = texelFetch(ourTexture6, ivec2(FragPos) + ivec2(i-1, j-1), 0).rgb;
+            vec3 sample = texelFetch(ourTextureLighting, ivec2(FragPos) + ivec2(i-1, j-1), 0).rgb;
             I[i][j] = length(sample);
         }
     }
