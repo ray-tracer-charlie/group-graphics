@@ -1,4 +1,4 @@
-/* Cartoon Shader - Vertex Shader 4 */
+/* Cartoon Shader - Vertex Lighting */
 
 #version 330 core
 layout (location = 0) in vec3 position;
@@ -16,7 +16,7 @@ uniform mat4 view;
 uniform mat4 projection;
 
 void main()
-{	
+{   
     // **Reference: chuyi@'s HW3 vertex shader code.
     
     // Since our transformations matrices are mat4s, we append a fourth w-term of 1.0f to position.

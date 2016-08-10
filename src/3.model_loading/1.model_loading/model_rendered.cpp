@@ -53,29 +53,35 @@ GLfloat lastX  =  WIDTH  / 2.0;
 GLfloat lastY  =  HEIGHT / 2.0;
 bool    keys[1024];
 
-// Room lmain ight position
-glm::vec3 lightPos(10.2f, 1.0f, 2.0f);
+// Room main light position
+//glm::vec3 lightPos(10.2f, 1.0f, 2.0f);
 
 //ceiling tile lights
 glm::vec3 tilelightPos[] = {
     //right side
-    glm::vec3(8.0f, 1.0f, 4.0f),
-    glm::vec3(8.0f, 1.0f, 2.0f),
-    glm::vec3(8.0f, 1.0f, 0.0f),
+    glm::vec3(5.0f, 2.5f, 4.0f),
+    glm::vec3(5.0f, 2.5f, 2.0f),
+    glm::vec3(5.0f, 2.5f, 0.0f),
     //left side
-    glm::vec3(-8.0f, 1.0f, 4.0f),
-    glm::vec3(-8.0f, 1.0f, 2.0f),
-    glm::vec3(-8.0f, 1.0f, 0.0f),
+    glm::vec3(-6.5f, 2.5f, 4.0f),
+    glm::vec3(-6.5f, 2.5f, 2.0f),
+    glm::vec3(-6.5f, 2.5f, 0.0f),
     //front
-    glm::vec3(-6.0f, 1.0f, 0.0f),
-    glm::vec3(-2.2f, 1.0f, 0.0f),
-    glm::vec3(2.2f, 1.0f, 0.0f),
-    glm::vec3(-6.2f, 1.0f, 0.0f),
+    glm::vec3(-4.5f, 2.5f, -1.0f),
+    glm::vec3(-3.0f, 2.5f, -1.0f),
+    glm::vec3(-1.5f, 2.5f, -1.0f),
+    glm::vec3(0.0f, 2.5f, -1.0f),
+    glm::vec3(1.5f, 2.5f, -1.0f),
+    glm::vec3(3.0f, 2.5f, -1.0f),
+    glm::vec3(4.5f, 2.5f, -1.0f),
     //back
-    glm::vec3(-6.0f, 1.0f, 4.0f),
-    glm::vec3(-2.2f, 1.0f, 4.0f),
-    glm::vec3(2.2f, 1.0f, 4.0f),
-    glm::vec3(-6.2f, 1.0f, 4.0f)
+    glm::vec3(-4.5f, 2.5f, 5.0f),
+    glm::vec3(-3.0f, 2.5f, 5.0f),
+    glm::vec3(-1.5f, 2.5f, 5.0f),
+    glm::vec3(0.0f, 2.5f, 5.0f),
+    glm::vec3(1.5f, 2.5f, 5.0f),
+    glm::vec3(3.0f, 2.5f, 5.0f),
+    glm::vec3(4.5f, 2.5f, 5.0f)
 };
 
 
@@ -141,7 +147,7 @@ int main()
     Shader paintingShader5("shader5.vs", "shader5.frag");
     Shader paintingShader6("shader6.vs", "shader6.frag");
     Shader roomShader("room-shader.vs", "room-shader.frag");
-
+    Shader lightShader("light-shader.vs", "light-shader.frag");
 
 
     ///////////////////////////////
@@ -342,7 +348,6 @@ int main()
         1, 2, 3  // Second Triangle
     };
 
-
     GLuint roomVBO, roomContainerVAO, roomEBO;
     glGenVertexArrays(1, &roomContainerVAO);
     glGenBuffers(1, &roomVBO);
@@ -356,6 +361,36 @@ int main()
 
     glBindVertexArray(roomContainerVAO);
 
+    /* Lights */
+    /*
+    // Set up vertex data (and buffer(s)) and attribute pointers
+    GLfloat lightingVertices[] = {
+        // Positions          // Colors           // Texture Coords
+         5.5f,  5.5f, 5.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
+         5.5f, -5.5f, 5.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
+        -5.5f, -5.5f, 5.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
+        -5.5f,  5.5f, 5.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left
+    };
+
+    GLuint lightingIndices[] = {  // Note that we start from 0!
+        0, 1, 3, // First Triangle
+        1, 2, 3  // Second Triangle
+    };
+
+    GLuint lightingVBO, lightingContainerVAO, lightingEBO;
+    glGenVertexArrays(1, &lightingContainerVAO);
+    glGenBuffers(1, &lightingVBO);
+    glGenBuffers(1, &lightingEBO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, lightingVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(lightingVertices), lightingVertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lightingEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(lightingIndices), lightingIndices, GL_STATIC_DRAW);
+
+    glBindVertexArray(lightingContainerVAO);
+
+    */
 
     // Position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
@@ -384,6 +419,8 @@ int main()
     GLuint texture4;
     GLuint texture5;
     GLuint texture6;
+    //GLuint textureLighting;
+
 
     /* Texture 1 */
     glGenTextures(1, &texture1);
@@ -487,6 +524,25 @@ int main()
     SOIL_free_image_data(image6);
     glBindTexture(GL_TEXTURE_2D, 0);
 
+    /* Lighting Texture */
+    /*
+    glGenTextures(1, &textureLighting);
+    glBindTexture(GL_TEXTURE_2D, textureLighting); // All upcoming GL_TEXTURE_2D operations now have effect on our texture object
+    // Set our texture parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);   // Set texture wrapping to GL_REPEAT
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // Set texture filtering
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // Load, create texture and generate mipmaps
+
+    unsigned char* imageLighting = SOIL_load_image(FileSystem::getPath("resources/images/white-light.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, imageLighting);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    SOIL_free_image_data(imageLighting);
+    glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
+    */
 
     //////////////////
     // Set up light //
@@ -508,9 +564,6 @@ int main()
     // Load objects //
     //////////////////
 
-    // TODO: Remove.
-    std::cout << "check point 1" << std::endl;
-
     // Load model
     Model paintingModel(FileSystem::getPath("resources/objects/painting/frame-plane-2.obj").c_str());
     Model paintingModel2(FileSystem::getPath("resources/objects/painting/frame-plane-2.obj").c_str());
@@ -519,15 +572,11 @@ int main()
     Model paintingModel5(FileSystem::getPath("resources/objects/painting/frame-plane-2.obj").c_str());
     Model paintingModel6(FileSystem::getPath("resources/objects/painting/frame-plane-2.obj").c_str());
 
-    // TODO: Remove.
-    std::cout << "check point 1.5" << std::endl;
-
     //Load room model
     Model roomModel(FileSystem::getPath("resources/objects/gallery/gallery-room-2-trophy.obj").c_str());
 
-    // TODO: Remove.
-    std::cout << "check point 2" << std::endl;
-
+    //Load light model
+    //Model lightingModel(FileSystem::getPath("resources/objects/light/light-orb.obj").c_str());
 
 
     ///////////////
@@ -564,8 +613,8 @@ int main()
         GLint lightPosLoc    = glGetUniformLocation(paintingShader.Program, "lightPos");
         GLint viewPosLoc     = glGetUniformLocation(paintingShader.Program, "viewPos");
         glUniform3f(objectColorLoc, 1.0f, 1.0f, 1.0f);
-        glUniform3f(lightColorLoc,  1.0f, 1.0f, 1.0f);
-        glUniform3f(lightPosLoc,    lightPos.x, lightPos.y, lightPos.z);
+        glUniform3f(lightColorLoc,  .95f, .95f, .95f);
+        glUniform3f(lightPosLoc,    spotlightPos[0].x, spotlightPos[0].y, spotlightPos[0].z);
         glUniform3f(viewPosLoc,     camera.Position.x, camera.Position.y, camera.Position.z);
 
         // Create camera transformations
@@ -609,8 +658,8 @@ int main()
         GLint lightPosLoc2    = glGetUniformLocation(paintingShader2.Program, "lightPos");
         GLint viewPosLoc2     = glGetUniformLocation(paintingShader2.Program, "viewPos");
         glUniform3f(objectColorLoc2, 1.0f, 1.0f, 1.0f);
-        glUniform3f(lightColorLoc2,  1.0f, 1.0f, 1.0f);
-        glUniform3f(lightPosLoc2,    lightPos.x, lightPos.y, lightPos.z);
+        glUniform3f(lightColorLoc2,  .8f, .8f, .8f);
+        glUniform3f(lightPosLoc2,    spotlightPos[1].x, spotlightPos[1].y, spotlightPos[1].z);
         glUniform3f(viewPosLoc2,     camera.Position.x, camera.Position.y, camera.Position.z);
 
         // Create camera transformations
@@ -654,8 +703,8 @@ int main()
         GLint lightPosLoc3    = glGetUniformLocation(paintingShader3.Program, "lightPos");
         GLint viewPosLoc3     = glGetUniformLocation(paintingShader3.Program, "viewPos");
         glUniform3f(objectColorLoc3, 1.0f, 1.0f, 1.0f);
-        glUniform3f(lightColorLoc3,  1.0f, 1.0f, 1.0f);
-        glUniform3f(lightPosLoc3,    lightPos.x, lightPos.y, lightPos.z);
+        glUniform3f(lightColorLoc3,  .8f, .80f, .8f);
+        glUniform3f(lightPosLoc3,    spotlightPos[2].x, spotlightPos[2].y, spotlightPos[2].z);
         glUniform3f(viewPosLoc3,     camera.Position.x, camera.Position.y, camera.Position.z);
 
         // Create camera transformations
@@ -675,8 +724,8 @@ int main()
 
         glm::mat4 model3;
         // The following line modifies the location of the painting.
-        model3 = glm::translate(model3, glm::vec3(4.50f, 0.0f, 9.0f)); // Translate it down a bit so it's at the center of the scene
-        model3 = glm::scale(model3, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
+        model3 = glm::translate(model3, glm::vec3(4.50f, -0.6f, 9.0f)); // Translate it down a bit so it's at the center of the scene
+        model3 = glm::scale(model3, glm::vec3(2.12f, 2.12f, 2.12f)); // It's a bit too big for our scene, so scale it down
         model3 = glm::rotate(model3, (glm::mediump_float)110, glm::vec3(0.0f, 1.0f, 0.0f)); //put it on the back wall 180 degree rotation
         glUniformMatrix4fv(glGetUniformLocation(paintingShader3.Program, "model3"), 1, GL_FALSE, glm::value_ptr(model3));
         paintingModel3.Draw(paintingShader3);
@@ -701,8 +750,8 @@ int main()
         GLint lightPosLoc4    = glGetUniformLocation(paintingShader4.Program, "lightPos");
         GLint viewPosLoc4     = glGetUniformLocation(paintingShader4.Program, "viewPos");
         glUniform3f(objectColorLoc4, 1.0f, 1.0f, 1.0f);
-        glUniform3f(lightColorLoc4,  1.0f, 1.0f, 1.0f);
-        glUniform3f(lightPosLoc4,    lightPos.x, lightPos.y, lightPos.z);
+        glUniform3f(lightColorLoc4,  .8f, .8f, .8f);
+        glUniform3f(lightPosLoc4,    spotlightPos[3].x, spotlightPos[3].y, spotlightPos[3].z);
         glUniform3f(viewPosLoc4,     camera.Position.x, camera.Position.y, camera.Position.z);
 
         // Create camera transformations
@@ -731,6 +780,7 @@ int main()
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
 
+
          /* Image 5 */
 
         glActiveTexture(GL_TEXTURE0);
@@ -745,8 +795,8 @@ int main()
         GLint lightPosLoc5    = glGetUniformLocation(paintingShader5.Program, "lightPos");
         GLint viewPosLoc5     = glGetUniformLocation(paintingShader5.Program, "viewPos");
         glUniform3f(objectColorLoc5, 1.0f, 1.0f, 1.0f);
-        glUniform3f(lightColorLoc5,  1.0f, 1.0f, 1.0f);
-        glUniform3f(lightPosLoc5,    lightPos.x, lightPos.y, lightPos.z);
+        glUniform3f(lightColorLoc5,  .7f, .7f, .7f);
+        glUniform3f(lightPosLoc5,    spotlightPos[4].x, spotlightPos[4].y, spotlightPos[4].z);
         glUniform3f(viewPosLoc5,     camera.Position.x, camera.Position.y, camera.Position.z);
 
         // Create camera transformations
@@ -766,8 +816,8 @@ int main()
 
         glm::mat4 model5;
         // The following line modifies the location of the painting.
-        model5 = glm::translate(model5, glm::vec3(-13.0f, 0.0f, 2.0f)); // Translate it down a bit so it's at the center of the scene
-        model5 = glm::scale(model5, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
+        model5 = glm::translate(model5, glm::vec3(-13.0f, -0.5f, 2.0f)); // Translate it down a bit so it's at the center of the scene
+        model5 = glm::scale(model5, glm::vec3(2.12f, 2.12f, 2.12f)); // It's a bit too big for our scene, so scale it down
         model5 = glm::rotate(model5, (glm::mediump_float)-190.08, glm::vec3(0.0f, 1.0f, 0.0f));
         glUniformMatrix4fv(glGetUniformLocation(paintingShader5.Program, "model5"), 1, GL_FALSE, glm::value_ptr(model5));
         paintingModel5.Draw(paintingShader5);
@@ -791,8 +841,8 @@ int main()
         GLint lightPosLoc6    = glGetUniformLocation(paintingShader6.Program, "lightPos");
         GLint viewPosLoc6     = glGetUniformLocation(paintingShader6.Program, "viewPos");
         glUniform3f(objectColorLoc6, 1.0f, 1.0f, 1.0f);
-        glUniform3f(lightColorLoc6,  1.0f, 1.0f, 1.0f);
-        glUniform3f(lightPosLoc6,    lightPos.x, lightPos.y, lightPos.z);
+        glUniform3f(lightColorLoc6,  .8f, .8f, .8f);
+        glUniform3f(lightPosLoc6,    spotlightPos[5].x, spotlightPos[5].y, spotlightPos[5].z);
         glUniform3f(viewPosLoc6,     camera.Position.x, camera.Position.y, camera.Position.z);
 
         // Create camera transformations
@@ -828,17 +878,83 @@ int main()
         roomShader.Use();
         GLint objectColorLocRoom = glGetUniformLocation(roomShader.Program, "objectColor");
         GLint lightColorLocRoom  = glGetUniformLocation(roomShader.Program, "lightColor");
-        //GLint lightPosLocRoom1    = glGetUniformLocation(roomShader.Program, "tilelightPos");
-        GLint viewPosLocRoom     = glGetUniformLocation(roomShader.Program, "viewPos");
-        glUniform3f(objectColorLocRoom, 1.0f, 1.0f, 1.0f);
-        glUniform3f(lightColorLocRoom,  1.0f, 1.0f, 1.0f);
-        //glUniform3f(lightPosLocRoom1,    tilelightPos[0].x, tilelightPos[0].y, tilelightPos[0].z);
-        //glUniform3f(lightPosLocRoom2,    tilelightPos[1].x, tilelightPos[1].y, tilelightPos[1].z);
-        //glUniform3f(lightPosLocRoom3,    tilelightPos[2].x, tilelightPos[2].y, tilelightPos[2].z);
-        glUniform3f(viewPosLocRoom,     camera.Position.x, camera.Position.y, camera.Position.z);
 
-        // Draw the container (using container's vertex attributes)
-        glBindVertexArray(roomContainerVAO);
+        //define tile lights for the shader to use
+        GLint lightPosLocRoom    = glGetUniformLocation(roomShader.Program, "tilelightPos[0].position");
+        GLint lightPosLocRoom1    = glGetUniformLocation(roomShader.Program, "tilelightPos[1].position");
+        GLint lightPosLocRoom2    = glGetUniformLocation(roomShader.Program, "tilelightPos[2].position");
+        GLint lightPosLocRoom3    = glGetUniformLocation(roomShader.Program, "tilelightPos[3].position");
+        GLint lightPosLocRoom4    = glGetUniformLocation(roomShader.Program, "tilelightPos[4].position");
+        GLint lightPosLocRoom5    = glGetUniformLocation(roomShader.Program, "tilelightPos[5].position");
+        GLint lightPosLocRoom6    = glGetUniformLocation(roomShader.Program, "tilelightPos[6].position");
+        GLint lightPosLocRoom7    = glGetUniformLocation(roomShader.Program, "tilelightPos[7].position");
+        GLint lightPosLocRoom8    = glGetUniformLocation(roomShader.Program, "tilelightPos[8].position");
+        GLint lightPosLocRoom9    = glGetUniformLocation(roomShader.Program, "tilelightPos[9].position");
+        GLint lightPosLocRoom10    = glGetUniformLocation(roomShader.Program, "tilelightPos[10].position");
+        GLint lightPosLocRoom11    = glGetUniformLocation(roomShader.Program, "tilelightPos[11].position");
+        GLint lightPosLocRoom12    = glGetUniformLocation(roomShader.Program, "tilelightPos[12].position");
+        GLint lightPosLocRoom13    = glGetUniformLocation(roomShader.Program, "tilelightPos[13].position");
+        GLint lightPosLocRoom14    = glGetUniformLocation(roomShader.Program, "tilelightPos[14].position");
+        GLint lightPosLocRoom15    = glGetUniformLocation(roomShader.Program, "tilelightPos[15].position");
+        GLint lightPosLocRoom16    = glGetUniformLocation(roomShader.Program, "tilelightPos[16].position");
+        GLint lightPosLocRoom17    = glGetUniformLocation(roomShader.Program, "tilelightPos[17].position");
+       GLint lightPosLocRoom18    = glGetUniformLocation(roomShader.Program, "tilelightPos[18].position");
+        GLint lightPosLocRoom19    = glGetUniformLocation(roomShader.Program, "tilelightPos[19].position");
+
+
+/*
+        //define spot lights
+        GLint spotlightPosLocRoom    = glGetUniformLocation(roomShader.Program, "spotlightPos[0]");
+        GLint spotlightPosLocRoom1    = glGetUniformLocation(roomShader.Program, "spotlightPos[1]");
+        GLint spotlightPosLocRoom2    = glGetUniformLocation(roomShader.Program, "spotlightPos[2]");
+        GLint spotlightPosLocRoom3    = glGetUniformLocation(roomShader.Program, "spotlightPos[3]");
+        GLint spotlightPosLocRoom4    = glGetUniformLocation(roomShader.Program, "spotlightPos[4]");
+        GLint spotlightPosLocRoom5    = glGetUniformLocation(roomShader.Program, "spotlightPos[5]");
+*/
+
+        GLint viewPosLocRoom     = glGetUniformLocation(roomShader.Program, "viewPos");
+        glUniform3f(objectColorLocRoom, 0.25f, 0.25f, 0.25f);
+        glUniform3f(lightColorLocRoom,  0.3f, 0.3f, 0.3f);
+        
+
+        //set tile lights in the room
+        glUniform3f(lightPosLocRoom,    tilelightPos[0].x, tilelightPos[0].y, tilelightPos[0].z);
+        glUniform3f(lightPosLocRoom1,    tilelightPos[1].x, tilelightPos[1].y, tilelightPos[1].z);
+        glUniform3f(lightPosLocRoom2,    tilelightPos[2].x, tilelightPos[2].y, tilelightPos[2].z);
+        glUniform3f(lightPosLocRoom3,    tilelightPos[3].x, tilelightPos[3].y, tilelightPos[3].z);
+        glUniform3f(lightPosLocRoom4,    tilelightPos[4].x, tilelightPos[4].y, tilelightPos[4].z);
+        glUniform3f(lightPosLocRoom5,    tilelightPos[5].x, tilelightPos[5].y, tilelightPos[5].z);
+        glUniform3f(lightPosLocRoom6,    tilelightPos[6].x, tilelightPos[6].y, tilelightPos[6].z);
+        glUniform3f(lightPosLocRoom7,    tilelightPos[7].x, tilelightPos[7].y, tilelightPos[7].z);
+        glUniform3f(lightPosLocRoom8,    tilelightPos[8].x, tilelightPos[8].y, tilelightPos[8].z);
+        glUniform3f(lightPosLocRoom9,    tilelightPos[9].x, tilelightPos[9].y, tilelightPos[9].z);
+        glUniform3f(lightPosLocRoom10,    tilelightPos[10].x, tilelightPos[10].y, tilelightPos[10].z);
+        glUniform3f(lightPosLocRoom11,    tilelightPos[11].x, tilelightPos[11].y, tilelightPos[11].z);
+        glUniform3f(lightPosLocRoom12,    tilelightPos[12].x, tilelightPos[12].y, tilelightPos[12].z);
+        glUniform3f(lightPosLocRoom13,    tilelightPos[13].x, tilelightPos[13].y, tilelightPos[13].z);
+        glUniform3f(lightPosLocRoom14,    tilelightPos[14].x, tilelightPos[14].y, tilelightPos[14].z);
+        glUniform3f(lightPosLocRoom15,    tilelightPos[15].x, tilelightPos[15].y, tilelightPos[15].z);
+        glUniform3f(lightPosLocRoom16,    tilelightPos[16].x, tilelightPos[16].y, tilelightPos[16].z);
+        glUniform3f(lightPosLocRoom17,    tilelightPos[17].x, tilelightPos[17].y, tilelightPos[17].z);
+        glUniform3f(lightPosLocRoom18,    tilelightPos[18].x, tilelightPos[18].y, tilelightPos[18].z);
+        glUniform3f(lightPosLocRoom19,    tilelightPos[19].x, tilelightPos[19].y, tilelightPos[19].z);
+
+/*
+        //set spotlights in the room
+        glUniform3f(spotlightPosLocRoom.position,    spotlightPos[0].x, spotlightPos[0].y, tilelightPos[0].z);
+        glUniform3f(spotlightPosLocRoom.direction,    -0.2f, -1.0f, -0.3f);
+        glUniform3f(spotlightPosLocRoom1.position,    spotlightPos[1].x, spotlightPos[1].y, tilelightPos[1].z);
+        glUniform3f(spotlightPosLocRoom1.direction,    -0.2f, -1.0f, -0.3f);
+        glUniform3f(spotlightPosLocRoom2.position,    spotlightPos[2].x, spotlightPos[2].y, tilelightPos[2].z);
+        glUniform3f(spotlightPosLocRoom2.direction,    -0.2f, -1.0f, -0.3f);
+        glUniform3f(spotlightPosLocRoom3.position,    spotlightPos[3].x, spotlightPos[3].y, tilelightPos[3].z);
+        glUniform3f(spotlightPosLocRoom3.direction,    -0.2f, -1.0f, -0.3f);
+        glUniform3f(spotlightPosLocRoom4.position,    spotlightPos[4].x, spotlightPos[4].y, tilelightPos[4].z);
+        glUniform3f(spotlightPosLocRoom5.direction,    -0.2f, -1.0f, -0.3f);
+        glUniform3f(spotlightPosLocRoom6.position,    spotlightPos[5].x, spotlightPos[5].y, tilelightPos[5].z);
+        glUniform3f(spotlightPosLocRoom6.direction,    -0.2f, -1.0f, -0.3f);
+   */
+        glUniform3f(viewPosLocRoom,     camera.Position.x, camera.Position.y, camera.Position.z);
 
         // Create camera transformations
         glm::mat4 roomView;
@@ -864,6 +980,51 @@ int main()
         glUniformMatrix4fv(roomModelLoc, 1, GL_FALSE, glm::value_ptr(modelRoom));
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
+
+
+        /* Light */
+        /*
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureLighting);
+        glUniform1i(glGetUniformLocation(lightShader.Program, "ourTextureLighting"), 0);
+
+        lightShader.Use();
+        GLint objectColorLocLighting = glGetUniformLocation(lightShader.Program, "objectColor");
+        GLint lightColorLocLighting  = glGetUniformLocation(lightShader.Program, "lightingColor");
+        GLint viewPosLocLighting     = glGetUniformLocation(lightShader.Program, "viewPos");
+        glUniform3f(objectColorLocLighting, .5f, 0.0f, 0.0f);
+        glUniform3f(lightColorLocLighting,  1.0f, 1.0f, 1.0f);
+
+        glUniform3f(viewPosLocLighting,     camera.Position.x, camera.Position.y, camera.Position.z);
+
+        // Draw the container (using container's vertex attributes)
+        glBindVertexArray(lightingContainerVAO);
+
+        // Create camera transformations
+        glm::mat4 lightingView;
+        lightingView = camera.GetViewMatrix();
+        glm::mat4 lightingProjection = glm::perspective(camera.Zoom, (GLfloat)w / (GLfloat)h, 0.1f, 100.0f);
+        // Get the uniform locations
+        GLint lightingModelLoc = glGetUniformLocation(lightShader.Program, "model");
+        GLint lightingViewLoc  = glGetUniformLocation(lightShader.Program,  "view");
+        GLint lightingProjLoc  = glGetUniformLocation(lightShader.Program,  "projection");
+        // Pass the matrices to the shader
+        glUniformMatrix4fv(lightingViewLoc, 1, GL_FALSE, glm::value_ptr(lightingView));
+        glUniformMatrix4fv(lightingProjLoc, 1, GL_FALSE, glm::value_ptr(lightingProjection));
+
+        // Draw the container (using container's vertex attributes)
+        glBindVertexArray(lightingContainerVAO);
+
+        glm::mat4 modelLighting;
+        modelLighting = glm::translate(modelLighting, glm::vec3(1.0f, 3.0f, -2.0f)); // Translate it down a bit so it's at the center of the scene
+        modelLighting = glm::scale(modelLighting, glm::vec3(0.25f, 0.25f, 0.25f)); // It's a bit too big for our scene, so scale it down
+        glUniformMatrix4fv(glGetUniformLocation(lightShader.Program, "lightingModel"), 1, GL_FALSE, glm::value_ptr(modelLighting));
+        lightingModel.Draw(lightShader);
+
+        glUniformMatrix4fv(lightingModelLoc, 1, GL_FALSE, glm::value_ptr(modelLighting));
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+        */
 
         // Swap the screen buffers
         glfwSwapBuffers(window);
