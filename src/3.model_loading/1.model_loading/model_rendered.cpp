@@ -53,8 +53,42 @@ GLfloat lastX  =  WIDTH  / 2.0;
 GLfloat lastY  =  HEIGHT / 2.0;
 bool    keys[1024];
 
-// Light position
-glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+// Room lmain ight position
+glm::vec3 lightPos(10.2f, 1.0f, 2.0f);
+
+//ceiling tile lights
+glm::vec3 tilelightPos[] = {
+    //right side
+    glm::vec3(8.0f, 1.0f, 4.0f),
+    glm::vec3(8.0f, 1.0f, 2.0f),
+    glm::vec3(8.0f, 1.0f, 0.0f),
+    //left side
+    glm::vec3(-8.0f, 1.0f, 4.0f),
+    glm::vec3(-8.0f, 1.0f, 2.0f),
+    glm::vec3(-8.0f, 1.0f, 0.0f),
+    //front
+    glm::vec3(-6.0f, 1.0f, 0.0f),
+    glm::vec3(-2.2f, 1.0f, 0.0f),
+    glm::vec3(2.2f, 1.0f, 0.0f),
+    glm::vec3(-6.2f, 1.0f, 0.0f),
+    //back
+    glm::vec3(-6.0f, 1.0f, 4.0f),
+    glm::vec3(-2.2f, 1.0f, 4.0f),
+    glm::vec3(2.2f, 1.0f, 4.0f),
+    glm::vec3(-6.2f, 1.0f, 4.0f)
+};
+
+
+
+//Room spotlight positions
+glm::vec3 spotlightPos[] = {
+    glm::vec3(0.12f, 0.4f, -6.04f),
+    glm::vec3(5.12f, 0.4f, -6.04f),
+    glm::vec3(4.50f, 0.0f, 9.0f),
+    glm::vec3(-5.12f, 0.4f, -6.04f),
+    glm::vec3(-13.0f, 0.0f, 2.0f),
+    glm::vec3(11.90f, 0.2f, 2.0f)
+};
 
 // Deltatime
 GLfloat deltaTime = 0.0f;   // Time between current frame and last frame
@@ -104,6 +138,8 @@ int main()
     Shader paintingShader2("shader2.vs", "shader2.frag");
     Shader paintingShader3("shader3.vs", "shader3.frag");
     Shader paintingShader4("shader4.vs", "shader4.frag");
+    Shader paintingShader5("shader5.vs", "shader5.frag");
+    Shader paintingShader6("shader6.vs", "shader6.frag");
     Shader roomShader("room-shader.vs", "room-shader.frag");
 
 
@@ -178,10 +214,10 @@ int main()
     // Set up vertex data (and buffer(s)) and attribute pointers
     GLfloat vertices3[] = {
         // Positions          // Colors           // Texture Coords
-         3.5f,  1.5f, 1.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
-         1.5f, -1.5f, 1.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
-        -1.5f, -1.5f, 1.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
-        -1.5f,  1.5f, 1.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left
+         4.5f,  2.5f, 1.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
+         4.5f, -2.5f, 1.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
+        -2.5f, -2.5f, 1.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
+        -2.5f, 2.5f, 1.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left
     };
 
     GLuint indices3[] = {  // Note that we start from 0!
@@ -233,6 +269,63 @@ int main()
 
     glBindVertexArray(containerVAO4);
 
+    /* Painting 5 */
+    // Set up vertex data (and buffer(s)) and attribute pointers
+    GLfloat vertices5[] = {
+        // Positions          // Colors           // Texture Coords
+         2.5f,  1.5f, 1.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
+         1.5f, -1.5f, 1.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
+        -1.5f, -1.5f, 1.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
+        -1.5f,  1.5f, 1.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left
+    };
+
+    GLuint indices5[] = {  // Note that we start from 0!
+        0, 1, 3, // First Triangle
+        1, 2, 3  // Second Triangle
+    };
+
+    // First, set the container's VAO (and VBO)
+    GLuint VBO5, containerVAO5, EBO5;
+    glGenVertexArrays(1, &containerVAO5);
+    glGenBuffers(1, &VBO5);
+    glGenBuffers(1, &EBO5);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO5);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices5), vertices5, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO5);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices5), indices5, GL_STATIC_DRAW);
+
+    glBindVertexArray(containerVAO5);
+
+    /* Painting 6 */
+    // Set up vertex data (and buffer(s)) and attribute pointers
+    GLfloat vertices6[] = {
+        // Positions          // Colors           // Texture Coords
+         2.5f,  1.5f, 1.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
+         1.5f, -1.5f, 1.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
+        -1.5f, -1.5f, 1.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
+        -1.5f,  1.5f, 1.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left
+    };
+
+    GLuint indices6[] = {  // Note that we start from 0!
+        0, 1, 3, // First Triangle
+        1, 2, 3  // Second Triangle
+    };
+
+    // First, set the container's VAO (and VBO)
+    GLuint VBO6, containerVAO6, EBO6;
+    glGenVertexArrays(1, &containerVAO6);
+    glGenBuffers(1, &VBO6);
+    glGenBuffers(1, &EBO6);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO6);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices6), vertices6, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO6);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices6), indices6, GL_STATIC_DRAW);
+
+    glBindVertexArray(containerVAO6);
 
     /* Room */
     // Set up vertex data (and buffer(s)) and attribute pointers
@@ -289,6 +382,8 @@ int main()
     GLuint texture2;
     GLuint texture3;
     GLuint texture4;
+    GLuint texture5;
+    GLuint texture6;
 
     /* Texture 1 */
     glGenTextures(1, &texture1);
@@ -360,6 +455,37 @@ int main()
     SOIL_free_image_data(image4);
     glBindTexture(GL_TEXTURE_2D, 0);
 
+    /* Texture 5 */
+    glGenTextures(1, &texture5);
+    glBindTexture(GL_TEXTURE_2D, texture5);
+    // Set our texture parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // Set texture filtering
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // Load, create texture and generate mipmaps
+    unsigned char* image5 = SOIL_load_image(FileSystem::getPath("resources/images/swimming-cheah.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image5);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    SOIL_free_image_data(image5);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+        /* Texture 6 */
+    glGenTextures(1, &texture6);
+    glBindTexture(GL_TEXTURE_2D, texture6);
+    // Set our texture parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // Set texture filtering
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // Load, create texture and generate mipmaps
+    unsigned char* image6 = SOIL_load_image(FileSystem::getPath("resources/images/gymnastics.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image6);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    SOIL_free_image_data(image6);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
 
     //////////////////
@@ -390,12 +516,14 @@ int main()
     Model paintingModel2(FileSystem::getPath("resources/objects/painting/frame-plane-2.obj").c_str());
     Model paintingModel3(FileSystem::getPath("resources/objects/painting/frame-plane-2.obj").c_str());
     Model paintingModel4(FileSystem::getPath("resources/objects/painting/frame-plane-2.obj").c_str());
+    Model paintingModel5(FileSystem::getPath("resources/objects/painting/frame-plane-2.obj").c_str());
+    Model paintingModel6(FileSystem::getPath("resources/objects/painting/frame-plane-2.obj").c_str());
 
     // TODO: Remove.
     std::cout << "check point 1.5" << std::endl;
 
     //Load room model
-    Model roomModel(FileSystem::getPath("resources/objects/gallery/gallery-room-2.obj").c_str());
+    Model roomModel(FileSystem::getPath("resources/objects/gallery/gallery-room-2-trophy.obj").c_str());
 
     // TODO: Remove.
     std::cout << "check point 2" << std::endl;
@@ -502,7 +630,7 @@ int main()
 
         glm::mat4 model2;
         // The following line modifies the location of the painting.
-        model2 = glm::translate(model2, glm::vec3(-3.12f, 0.4f, -6.04f)); // Translate it down a bit so it's at the center of the scene
+        model2 = glm::translate(model2, glm::vec3(5.12f, 0.4f, -6.04f)); // Translate it down a bit so it's at the center of the scene
         model2 = glm::scale(model2, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
         glUniformMatrix4fv(glGetUniformLocation(paintingShader2.Program, "model2"), 1, GL_FALSE, glm::value_ptr(model2));
         paintingModel2.Draw(paintingShader2);
@@ -547,8 +675,9 @@ int main()
 
         glm::mat4 model3;
         // The following line modifies the location of the painting.
-        model3 = glm::translate(model3, glm::vec3(3.12f, 0.4f, -6.04f)); // Translate it down a bit so it's at the center of the scene
+        model3 = glm::translate(model3, glm::vec3(4.50f, 0.0f, 9.0f)); // Translate it down a bit so it's at the center of the scene
         model3 = glm::scale(model3, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
+        model3 = glm::rotate(model3, (glm::mediump_float)110, glm::vec3(0.0f, 1.0f, 0.0f)); //put it on the back wall 180 degree rotation
         glUniformMatrix4fv(glGetUniformLocation(paintingShader3.Program, "model3"), 1, GL_FALSE, glm::value_ptr(model3));
         paintingModel3.Draw(paintingShader3);
 
@@ -593,12 +722,103 @@ int main()
 
         glm::mat4 model4;
         // The following line modifies the location of the painting.
-        model4 = glm::translate(model4, glm::vec3(-7.12f, 0.4f, -6.04f)); // Translate it down a bit so it's at the center of the scene
+        model4 = glm::translate(model4, glm::vec3(-5.12f, 0.4f, -6.04f)); // Translate it down a bit so it's at the center of the scene
         model4 = glm::scale(model4, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
         glUniformMatrix4fv(glGetUniformLocation(paintingShader4.Program, "model4"), 1, GL_FALSE, glm::value_ptr(model4));
         paintingModel4.Draw(paintingShader4);
 
         glUniformMatrix4fv(modelLoc4, 1, GL_FALSE, glm::value_ptr(model4));
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+
+         /* Image 5 */
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture5);
+        glUniform1i(glGetUniformLocation(paintingShader5.Program, "ourTexture5"), 0);
+
+        // Use cooresponding shader when setting uniforms/drawing objects
+        paintingShader5.Use();
+
+        GLint objectColorLoc5 = glGetUniformLocation(paintingShader5.Program, "objectColor");
+        GLint lightColorLoc5  = glGetUniformLocation(paintingShader5.Program, "lightColor");
+        GLint lightPosLoc5    = glGetUniformLocation(paintingShader5.Program, "lightPos");
+        GLint viewPosLoc5     = glGetUniformLocation(paintingShader5.Program, "viewPos");
+        glUniform3f(objectColorLoc5, 1.0f, 1.0f, 1.0f);
+        glUniform3f(lightColorLoc5,  1.0f, 1.0f, 1.0f);
+        glUniform3f(lightPosLoc5,    lightPos.x, lightPos.y, lightPos.z);
+        glUniform3f(viewPosLoc5,     camera.Position.x, camera.Position.y, camera.Position.z);
+
+        // Create camera transformations
+        glm::mat4 view5;
+        view5 = camera.GetViewMatrix();
+        glm::mat4 projection5 = glm::perspective(camera.Zoom, (GLfloat)w / (GLfloat)h, 0.1f, 100.0f);
+        // Get the uniform locations
+        GLint modelLoc5 = glGetUniformLocation(paintingShader5.Program, "model");
+        GLint viewLoc5  = glGetUniformLocation(paintingShader5.Program,  "view");
+        GLint projLoc5  = glGetUniformLocation(paintingShader5.Program,  "projection");
+        // Pass the matrices to the shader
+        glUniformMatrix4fv(viewLoc5, 1, GL_FALSE, glm::value_ptr(view5));
+        glUniformMatrix4fv(projLoc5, 1, GL_FALSE, glm::value_ptr(projection5));
+
+        // Draw the container (using container's vertex attributes)
+        glBindVertexArray(containerVAO5);
+
+        glm::mat4 model5;
+        // The following line modifies the location of the painting.
+        model5 = glm::translate(model5, glm::vec3(-13.0f, 0.0f, 2.0f)); // Translate it down a bit so it's at the center of the scene
+        model5 = glm::scale(model5, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
+        model5 = glm::rotate(model5, (glm::mediump_float)-190.08, glm::vec3(0.0f, 1.0f, 0.0f));
+        glUniformMatrix4fv(glGetUniformLocation(paintingShader5.Program, "model5"), 1, GL_FALSE, glm::value_ptr(model5));
+        paintingModel5.Draw(paintingShader5);
+
+        glUniformMatrix4fv(modelLoc5, 1, GL_FALSE, glm::value_ptr(model5));
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+
+
+        /* Image 6 */
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture6);
+        glUniform1i(glGetUniformLocation(paintingShader6.Program, "ourTexture6"), 0);
+
+        // Use cooresponding shader when setting uniforms/drawing objects
+        paintingShader4.Use();
+
+        GLint objectColorLoc6 = glGetUniformLocation(paintingShader6.Program, "objectColor");
+        GLint lightColorLoc6  = glGetUniformLocation(paintingShader6.Program, "lightColor");
+        GLint lightPosLoc6    = glGetUniformLocation(paintingShader6.Program, "lightPos");
+        GLint viewPosLoc6     = glGetUniformLocation(paintingShader6.Program, "viewPos");
+        glUniform3f(objectColorLoc6, 1.0f, 1.0f, 1.0f);
+        glUniform3f(lightColorLoc6,  1.0f, 1.0f, 1.0f);
+        glUniform3f(lightPosLoc6,    lightPos.x, lightPos.y, lightPos.z);
+        glUniform3f(viewPosLoc6,     camera.Position.x, camera.Position.y, camera.Position.z);
+
+        // Create camera transformations
+        glm::mat4 view6;
+        view6 = camera.GetViewMatrix();
+        glm::mat4 projection6 = glm::perspective(camera.Zoom, (GLfloat)w / (GLfloat)h, 0.1f, 100.0f);
+        // Get the uniform locations
+        GLint modelLoc6 = glGetUniformLocation(paintingShader4.Program, "model");
+        GLint viewLoc6  = glGetUniformLocation(paintingShader4.Program,  "view");
+        GLint projLoc6  = glGetUniformLocation(paintingShader4.Program,  "projection");
+        // Pass the matrices to the shader
+        glUniformMatrix4fv(viewLoc6, 1, GL_FALSE, glm::value_ptr(view6));
+        glUniformMatrix4fv(projLoc6, 1, GL_FALSE, glm::value_ptr(projection6));
+
+        // Draw the container (using container's vertex attributes)
+        glBindVertexArray(containerVAO6);
+
+        glm::mat4 model6;
+        // The following line modifies the location of the painting.
+        model6 = glm::translate(model6, glm::vec3(11.90f, 0.2f, 2.0f)); // Translate it down a bit so it's at the center of the scene
+        model6 = glm::scale(model6, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
+        model6 = glm::rotate(model6, (glm::mediump_float)-190.08, glm::vec3(0.0f, 1.0f, 0.0f)); //rotate it so it's on the right side wall!
+        glUniformMatrix4fv(glGetUniformLocation(paintingShader6.Program, "model6"), 1, GL_FALSE, glm::value_ptr(model6));
+        paintingModel6.Draw(paintingShader6);
+
+        glUniformMatrix4fv(modelLoc6, 1, GL_FALSE, glm::value_ptr(model6));
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
 
@@ -608,11 +828,13 @@ int main()
         roomShader.Use();
         GLint objectColorLocRoom = glGetUniformLocation(roomShader.Program, "objectColor");
         GLint lightColorLocRoom  = glGetUniformLocation(roomShader.Program, "lightColor");
-        GLint lightPosLocRoom    = glGetUniformLocation(roomShader.Program, "lightPos");
+        //GLint lightPosLocRoom1    = glGetUniformLocation(roomShader.Program, "tilelightPos");
         GLint viewPosLocRoom     = glGetUniformLocation(roomShader.Program, "viewPos");
         glUniform3f(objectColorLocRoom, 1.0f, 1.0f, 1.0f);
         glUniform3f(lightColorLocRoom,  1.0f, 1.0f, 1.0f);
-        glUniform3f(lightPosLocRoom,    lightPos.x, lightPos.y, lightPos.z);
+        //glUniform3f(lightPosLocRoom1,    tilelightPos[0].x, tilelightPos[0].y, tilelightPos[0].z);
+        //glUniform3f(lightPosLocRoom2,    tilelightPos[1].x, tilelightPos[1].y, tilelightPos[1].z);
+        //glUniform3f(lightPosLocRoom3,    tilelightPos[2].x, tilelightPos[2].y, tilelightPos[2].z);
         glUniform3f(viewPosLocRoom,     camera.Position.x, camera.Position.y, camera.Position.z);
 
         // Draw the container (using container's vertex attributes)
