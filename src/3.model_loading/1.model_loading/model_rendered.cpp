@@ -934,8 +934,10 @@ int main()
 
         glm::mat4 model2;
         // The following line modifies the location of the painting.
-        model2 = glm::translate(model2, glm::vec3(5.12f, 0.4f, -6.04f)); // Translate it down a bit so it's at the center of the scene
-        model2 = glm::scale(model2, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
+        model2 = glm::translate(model2, glm::vec3(5.15f, 0.4f, -6.03f)); // Translate it down a bit so it's at the center of the scene
+        model2 = glm::scale(model2, glm::vec3(1.06f, 1.10f, 1.12f)); // It's a bit too big for our scene, so scale it down
+        model2 = glm::rotate(model2, (glm::mediump_float)-0.02, glm::vec3(0.0f, 1.0f, 0.0f)); //put it on the back wall 180 degree rotation
+
         glUniformMatrix4fv(glGetUniformLocation(paintingShader2.Program, "model2"), 1, GL_FALSE, glm::value_ptr(model2));
         paintingModel2.Draw(paintingShader2);
 
@@ -1026,8 +1028,8 @@ int main()
 
         glm::mat4 model4;
         // The following line modifies the location of the painting.
-        model4 = glm::translate(model4, glm::vec3(-5.12f, 0.4f, -6.04f)); // Translate it down a bit so it's at the center of the scene
-        model4 = glm::scale(model4, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
+        model4 = glm::translate(model4, glm::vec3(-4.92f, 0.45f, -6.00f)); // Translate it down a bit so it's at the center of the scene
+        model4 = glm::scale(model4, glm::vec3(1.05f, 1.07f, 1.12f)); // It's a bit too big for our scene, so scale it down
         glUniformMatrix4fv(glGetUniformLocation(paintingShader4.Program, "model4"), 1, GL_FALSE, glm::value_ptr(model4));
         paintingModel4.Draw(paintingShader4);
 
