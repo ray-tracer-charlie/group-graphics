@@ -152,7 +152,7 @@ int main()
     Shader frameShader("frame-shader.vs", "frame-shader.frag");
     Shader trophyShader("trophy-shader.vs", "trophy-shader.frag"); 
     Shader benchShader("bench-shader.vs", "bench-shader.frag"); 
-    Shader orbShader("orb-shader.vs", "orb-shader.frag");
+ //   Shader orbShader("orb-shader.vs", "orb-shader.frag");
 
     ///////////////////////////////
     // Set up buffers and arrays //
@@ -549,7 +549,7 @@ int main()
 
     glBindVertexArray(benchContainerVAO);
 
-   /* Orb */
+   /* Orb 
     // Set up vertex data (and buffer(s)) and attribute pointers
     GLfloat orbVertices[] = {
         // Positions          // Colors           // Texture Coords
@@ -591,7 +591,7 @@ int main()
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(3);
     // Finish
-    glBindVertexArray(0);
+    glBindVertexArray(0); */
 
 
 
@@ -611,7 +611,7 @@ int main()
     GLuint frametexture;
     GLuint trophytexture;
     GLuint benchtexture;
-    GLuint orbtexture;
+ //   GLuint orbtexture;
 
     /* Texture 1 */
     glGenTextures(1, &texture1);
@@ -797,7 +797,7 @@ int main()
     glBindTexture(GL_TEXTURE_2D, 0);
 
 
-    /*Orb Texture*/
+    /*Orb Texture
     glGenTextures(1, &orbtexture);
     glBindTexture(GL_TEXTURE_2D, orbtexture);
     // Set our texture parameters
@@ -811,7 +811,7 @@ int main()
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image13);
     glGenerateMipmap(GL_TEXTURE_2D);
     SOIL_free_image_data(image13);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(GL_TEXTURE_2D, 0); */
 
     /* Room Texture*/
     glGenTextures(1, &roomtexture);
@@ -877,7 +877,7 @@ int main()
     //Load benches
     Model benchModel(FileSystem::getPath("resources/objects/gallery/benches.obj").c_str());
 
-    Model orbModel(FileSystem::getPath("resources/objects/gallery/orb-lights.obj").c_str());
+  //  Model orbModel(FileSystem::getPath("resources/objects/gallery/orb-lights.obj").c_str());
 
 
     ///////////////
@@ -1415,7 +1415,7 @@ int main()
 
 
 
-       /*Orb*/
+       /*Orb
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, orbtexture);
         glUniform1i(glGetUniformLocation(orbShader.Program, "orbTexture"), 0);
@@ -1459,7 +1459,7 @@ int main()
 
         glUniformMatrix4fv(orbModelLoc, 1, GL_FALSE, glm::value_ptr(modelOrb));
         glDrawArrays(GL_TRIANGLES, 0, 36);
-        glBindVertexArray(0);
+        glBindVertexArray(0); */
 
 
         /* Room */
