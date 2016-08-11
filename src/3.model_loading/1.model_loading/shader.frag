@@ -53,7 +53,7 @@ void main()
     /* Ambient lighting */
 
     // Choose a fraction for ambient.
-    float ambient = 2.0f;
+    float ambient = 3.2f;
 
 
     /* Diffuse lighting */
@@ -100,7 +100,7 @@ void main()
 
     /* Combine all three lighting effects. */
     // Combine all three effects into a single factor.
-    float cumulative = ambient + diffuse + specular;
+    float cumulative = ambient + diffuse;
 
     // Discretize cumulative depending on the range in which it falls.
     // cumulative = (cumulative < threshold) ? 0 : cumulative;

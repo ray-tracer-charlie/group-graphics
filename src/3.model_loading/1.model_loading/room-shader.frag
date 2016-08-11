@@ -83,7 +83,7 @@ vec3 CalcTileLight(TileLight light, vec3 Normal, vec3 FragPos, vec3 viewDir)
     txtColor3[1] = txtColor[1];
     txtColor3[2] = txtColor[2];
     
-    float ambient = 0.005f;   
+    float ambient = 0.000f;   
 
 
     /* Diffuse lighting */

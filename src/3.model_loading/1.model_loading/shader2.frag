@@ -53,7 +53,7 @@ void main()
     /* Ambient lighting */
 
     // Choose a fraction for ambient.
-    float ambient = 2.0f;
+    float ambient = 1.8f;
 
 
     /* Diffuse lighting */
@@ -115,7 +115,7 @@ void main()
     toonTxtColor3[2] = round(txtColor3[2] * colorFactor) / colorFactor;
 
 
-    // **Reference: http://computergraphics.stackexchange.com/questions/3646/opengl-glsl-sobel-edge-detection-filter.
+   /* // **Reference: http://computergraphics.stackexchange.com/questions/3646/opengl-glsl-sobel-edge-detection-filter.
 
     mat3 sx = mat3( 
         1.0, 2.0, 1.0, 
@@ -143,11 +143,11 @@ void main()
     g = smoothstep(0.4, 0.6, g);
     vec3 edgeColor = vec3(1., 0., 0.2);
 
-    // End experimental
+    // End experimental */
 
 
 
     // Set color by multiplying cumulativeLight with the color from the texture, and set "w"-term to 1.0f.
-    FragColor = vec4(cumulativeLight * toonTxtColor3 - vec3(g), 1.0f);
+    FragColor = vec4(cumulativeLight * toonTxtColor3, 1.0f);
 
 }
