@@ -152,7 +152,7 @@ int main()
     Shader frameShader("frame-shader.vs", "frame-shader.frag");
     Shader trophyShader("trophy-shader.vs", "trophy-shader.frag"); 
     Shader benchShader("bench-shader.vs", "bench-shader.frag"); 
-
+    Shader orbShader("orb-shader.vs", "orb-shader.frag");
 
     ///////////////////////////////
     // Set up buffers and arrays //
@@ -549,7 +549,34 @@ int main()
 
     glBindVertexArray(benchContainerVAO);
 
+   /* Orb */
+    // Set up vertex data (and buffer(s)) and attribute pointers
+    GLfloat orbVertices[] = {
+        // Positions          // Colors           // Texture Coords
+         5.5f,  5.5f, 5.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
+         5.5f, -5.5f, 5.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
+        -5.5f, -5.5f, 5.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
+        -5.5f,  5.5f, 5.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left
+    };
 
+    GLuint orbIndices[] = {  // Note that we start from 0!
+        0, 1, 3, // First Triangle
+        1, 2, 3  // Second Triangle
+    };
+
+
+    GLuint orbVBO, orbContainerVAO, orbEBO;
+    glGenVertexArrays(1, &orbContainerVAO);
+    glGenBuffers(1, &orbVBO);
+    glGenBuffers(1, &orbEBO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, orbVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(orbVertices), orbVertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, orbEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(orbIndices), orbIndices, GL_STATIC_DRAW);
+
+    glBindVertexArray(orbContainerVAO);
 
     // Position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
@@ -584,6 +611,7 @@ int main()
     GLuint frametexture;
     GLuint trophytexture;
     GLuint benchtexture;
+    GLuint orbtexture;
 
     /* Texture 1 */
     glGenTextures(1, &texture1);
@@ -769,6 +797,22 @@ int main()
     glBindTexture(GL_TEXTURE_2D, 0);
 
 
+    /*Orb Texture*/
+    glGenTextures(1, &orbtexture);
+    glBindTexture(GL_TEXTURE_2D, orbtexture);
+    // Set our texture parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // Set texture filtering
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // Load, create texture and generate mipmaps
+    unsigned char* image13 = SOIL_load_image(FileSystem::getPath("resources/images/orb.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image13);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    SOIL_free_image_data(image13);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     /* Room Texture*/
     glGenTextures(1, &roomtexture);
     glBindTexture(GL_TEXTURE_2D, roomtexture);
@@ -832,6 +876,8 @@ int main()
 
     //Load benches
     Model benchModel(FileSystem::getPath("resources/objects/gallery/benches.obj").c_str());
+
+    Model orbModel(FileSystem::getPath("resources/objects/gallery/orb.obj").c_str());
 
 
     ///////////////
@@ -1365,6 +1411,56 @@ int main()
         glUniformMatrix4fv(benchModelLoc, 1, GL_FALSE, glm::value_ptr(modelBench));
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
+
+
+
+
+       /*Orb*/
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, orbtexture);
+        glUniform1i(glGetUniformLocation(orbShader.Program, "orbTexture"), 0);
+
+        // Use cooresponding shader when setting uniforms/drawing objects
+        orbShader.Use();
+
+        GLint objectColorLocOrb = glGetUniformLocation(orbShader.Program, "objectColor");
+        GLint lightColorLocOrb  = glGetUniformLocation(orbShader.Program, "lightColor");
+        GLint lightPosLocOrb    = glGetUniformLocation(orbShader.Program, "lightPos");
+        GLint viewPosLocOrb     = glGetUniformLocation(orbShader.Program, "viewPos");
+        glUniform3f(objectColorLocOrb, 1.0f, 1.0f, 1.0f);
+        glUniform3f(lightColorLocOrb,  1.0f, 1.0f, 1.0f);
+        glUniform3f(lightPosLocOrb,    lightPos.x, lightPos.y, lightPos.z);
+        glUniform3f(viewPosLocOrb,     camera.Position.x, camera.Position.y, camera.Position.z);
+
+        // Create camera transformations
+        glm::mat4 orbView;
+        orbView = camera.GetViewMatrix();
+        glm::mat4 orbProjection = glm::perspective(camera.Zoom, (GLfloat)w / (GLfloat)h, 0.1f, 100.0f);
+        // Get the uniform locations
+        GLint orbModelLoc = glGetUniformLocation(orbShader.Program, "model");
+        GLint orbViewLoc = glGetUniformLocation(orbShader.Program,  "view");
+        GLint orbProjLoc = glGetUniformLocation(orbShader.Program,  "projection");
+        // Pass the matrices to the shader
+        glUniformMatrix4fv(orbViewLoc, 1, GL_FALSE, glm::value_ptr(orbView));
+        glUniformMatrix4fv(orbProjLoc, 1, GL_FALSE, glm::value_ptr(orbProjection));
+
+        // Draw the container (using container's vertex attributes)
+        glBindVertexArray(orbContainerVAO);
+
+        glm::mat4 modelOrb;
+        // The following line modifies the location of the painting.
+         //rotate around the y
+     //   modelBench = glm::rotate(modelBench, (glm::mediump_float)90, glm::vec3(0.0f, 1.0f, 0.0f));
+     //   modelBench = glm::translate(modelBench, glm::vec3(11.90f, 0.2f, 2.0f)); // Translate it down a bit so it's at the center of the scene
+     //   modelBench = glm::scale(modelBench, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
+
+        glUniformMatrix4fv(glGetUniformLocation(orbShader.Program, "orbmodel"), 1, GL_FALSE, glm::value_ptr(modelOrb));
+        orbModel.Draw(orbShader);
+
+        glUniformMatrix4fv(orbModelLoc, 1, GL_FALSE, glm::value_ptr(modelOrb));
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+
 
         /* Room */
         glActiveTexture(GL_TEXTURE0);
