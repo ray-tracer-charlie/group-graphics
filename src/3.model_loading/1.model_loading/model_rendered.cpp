@@ -54,7 +54,7 @@ GLfloat lastY  =  HEIGHT / 2.0;
 bool    keys[1024];
 
 // Room main light position
-glm::vec3 lightPos(10.2f, 1.0f, 2.0f);
+glm::vec3 lightPos(2.2f, 1.0f, 2.0f);
 
 //ceiling tile lights
 glm::vec3 tilelightPos[] = {
@@ -1119,7 +1119,7 @@ int main()
 
         glm::mat4 model6;
         // The following line modifies the location of the painting.
-        model6 = glm::translate(model6, glm::vec3(11.96f, -0.6f, 1.8f)); // Translate it down a bit so it's at the center of the scene
+        model6 = glm::translate(model6, glm::vec3(11.94f, -0.6f, 1.8f)); // Translate it down a bit so it's at the center of the scene
         model6 = glm::scale(model6, glm::vec3(2.12f, 1.9f, 2.12f)); // It's a bit too big for our scene, so scale it down
         model6 = glm::rotate(model6, (glm::mediump_float)-190.08, glm::vec3(0.0f, 1.0f, 0.0f)); //rotate it so it's on the right side wall!
         glUniformMatrix4fv(glGetUniformLocation(paintingShader6.Program, "model6"), 1, GL_FALSE, glm::value_ptr(model6));

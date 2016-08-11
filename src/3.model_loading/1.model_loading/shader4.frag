@@ -53,7 +53,7 @@ void main()
     /* Ambient lighting */
 
     // Choose a fraction for ambient.
-    float ambient = 2.0f;
+    float ambient = 1.8f;
 
 
     /* Diffuse lighting */

@@ -61,7 +61,7 @@ void main()
     /* Specular lighting */
     
     // Set scaling factor.
-    float specular = 0.0f;
+    float specular = 1.0f;
 
     // Set a shininess for the object.
     float shininess = 0;
