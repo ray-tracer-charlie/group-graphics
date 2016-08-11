@@ -53,14 +53,6 @@ void main()
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
 
-    // Set texture-based color.
-    vec4 txtColor = texture(ourTexture1, TexCoords);
-
-    vec3 txtColor3;
-    txtColor3[0] = txtColor[0];
-    txtColor3[1] = txtColor[1];
-    txtColor3[2] = txtColor[2];
-
     // cycle through and calculate the light from each spotlight
 /*
     for (int j = 0; j < 6; j++) {
@@ -82,6 +74,14 @@ void main()
 vec3 CalcTileLight(TileLight light, vec3 Normal, vec3 FragPos, vec3 viewDir)
 {
     vec3 lightDir = normalize(light.position - FragPos);
+    
+    // Set texture-based color.
+    vec4 txtColor = texture(ourTexture1, TexCoords);
+
+    vec3 txtColor3;
+    txtColor3[0] = txtColor[0];
+    txtColor3[1] = txtColor[1];
+    txtColor3[2] = txtColor[2];
     
     float ambient = 0.005f;   
 

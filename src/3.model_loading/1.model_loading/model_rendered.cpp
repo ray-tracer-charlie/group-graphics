@@ -54,7 +54,7 @@ GLfloat lastY  =  HEIGHT / 2.0;
 bool    keys[1024];
 
 // Room main light position
-//glm::vec3 lightPos(10.2f, 1.0f, 2.0f);
+glm::vec3 lightPos(10.2f, 1.0f, 2.0f);
 
 //ceiling tile lights
 glm::vec3 tilelightPos[] = {
@@ -147,12 +147,11 @@ int main()
     Shader paintingShader5("shader5.vs", "shader5.frag");
     Shader paintingShader6("shader6.vs", "shader6.frag");
     Shader roomShader("room-shader.vs", "room-shader.frag");
-<<<<<<< HEAD
-    Shader lightShader("light-shader.vs", "light-shader.frag");
-=======
     Shader floorShader("floor-shader.vs", "floor-shader.frag"); 
-
->>>>>>> Ross commit wed - floor shaders, room shader, textures x2w
+    Shader roofShader("roof-shader.vs", "roof-shader.frag");
+    Shader frameShader("frame-shader.vs", "frame-shader.frag");
+    Shader trophyShader("trophy-shader.vs", "trophy-shader.frag"); 
+    Shader benchShader("bench-shader.vs", "bench-shader.frag"); 
 
 
     ///////////////////////////////
@@ -431,6 +430,126 @@ int main()
     glBindVertexArray(floorContainerVAO);
 
 
+     /* Roof */
+    // Set up vertex data (and buffer(s)) and attribute pointers
+    GLfloat roofVertices[] = {
+        // Positions          // Colors           // Texture Coords
+         5.5f,  5.5f, 5.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
+         5.5f, -5.5f, 5.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
+        -5.5f, -5.5f, 5.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
+        -5.5f,  5.5f, 5.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left
+    };
+
+    GLuint roofIndices[] = {  // Note that we start from 0!
+        0, 1, 3, // First Triangle
+        1, 2, 3  // Second Triangle
+    };
+
+
+    GLuint roofVBO, roofContainerVAO, roofEBO;
+    glGenVertexArrays(1, &roofContainerVAO);
+    glGenBuffers(1, &roofVBO);
+    glGenBuffers(1, &roofEBO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, roofVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(roofVertices), roofVertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, roofEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(roofIndices), roofIndices, GL_STATIC_DRAW);
+
+    glBindVertexArray(roofContainerVAO);
+
+
+     /* Frame */
+    // Set up vertex data (and buffer(s)) and attribute pointers
+    GLfloat frameVertices[] = {
+        // Positions          // Colors           // Texture Coords
+         5.5f,  5.5f, 5.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
+         5.5f, -5.5f, 5.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
+        -5.5f, -5.5f, 5.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
+        -5.5f,  5.5f, 5.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left
+    };
+
+    GLuint frameIndices[] = {  // Note that we start from 0!
+        0, 1, 3, // First Triangle
+        1, 2, 3  // Second Triangle
+    };
+
+
+    GLuint frameVBO, frameContainerVAO, frameEBO;
+    glGenVertexArrays(1, &frameContainerVAO);
+    glGenBuffers(1, &frameVBO);
+    glGenBuffers(1, &frameEBO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, frameVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(frameVertices), frameVertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, frameEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(frameIndices), frameIndices, GL_STATIC_DRAW);
+
+    glBindVertexArray(frameContainerVAO);
+
+
+     /* Frame */
+    // Set up vertex data (and buffer(s)) and attribute pointers
+    GLfloat trophyVertices[] = {
+        // Positions          // Colors           // Texture Coords
+         5.5f,  5.5f, 5.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
+         5.5f, -5.5f, 5.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
+        -5.5f, -5.5f, 5.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
+        -5.5f,  5.5f, 5.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left
+    };
+
+    GLuint trophyIndices[] = {  // Note that we start from 0!
+        0, 1, 3, // First Triangle
+        1, 2, 3  // Second Triangle
+    };
+
+
+    GLuint trophyVBO, trophyContainerVAO, trophyEBO;
+    glGenVertexArrays(1, &trophyContainerVAO);
+    glGenBuffers(1, &trophyVBO);
+    glGenBuffers(1, &trophyEBO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, trophyVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(trophyVertices), trophyVertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, trophyEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(trophyIndices), trophyIndices, GL_STATIC_DRAW);
+
+    glBindVertexArray(trophyContainerVAO);
+
+
+     /* Frame */
+    // Set up vertex data (and buffer(s)) and attribute pointers
+    GLfloat benchVertices[] = {
+        // Positions          // Colors           // Texture Coords
+         5.5f,  5.5f, 5.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
+         5.5f, -5.5f, 5.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
+        -5.5f, -5.5f, 5.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
+        -5.5f,  5.5f, 5.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left
+    };
+
+    GLuint benchIndices[] = {  // Note that we start from 0!
+        0, 1, 3, // First Triangle
+        1, 2, 3  // Second Triangle
+    };
+
+
+    GLuint benchVBO, benchContainerVAO, benchEBO;
+    glGenVertexArrays(1, &benchContainerVAO);
+    glGenBuffers(1, &benchVBO);
+    glGenBuffers(1, &benchEBO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, benchVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(benchVertices), benchVertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, benchEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(benchIndices), benchIndices, GL_STATIC_DRAW);
+
+    glBindVertexArray(benchContainerVAO);
+
+
 
     // Position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
@@ -459,13 +578,12 @@ int main()
     GLuint texture4;
     GLuint texture5;
     GLuint texture6;
-<<<<<<< HEAD
-    //GLuint textureLighting;
-
-=======
     GLuint floortexture;
     GLuint roomtexture;
->>>>>>> Ross commit wed - floor shaders, room shader, textures x2w
+    GLuint rooftexture;
+    GLuint frametexture;
+    GLuint trophytexture;
+    GLuint benchtexture;
 
     /* Texture 1 */
     glGenTextures(1, &texture1);
@@ -585,6 +703,72 @@ int main()
     SOIL_free_image_data(image7);
     glBindTexture(GL_TEXTURE_2D, 0);
 
+        /* Roof Texture*/
+    glGenTextures(1, &rooftexture);
+    glBindTexture(GL_TEXTURE_2D, rooftexture);
+    // Set our texture parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // Set texture filtering
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // Load, create texture and generate mipmaps
+    unsigned char* image11 = SOIL_load_image(FileSystem::getPath("resources/images/floor2.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image11);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    SOIL_free_image_data(image11);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    /* Frame Texture*/
+    glGenTextures(1, &frametexture);
+    glBindTexture(GL_TEXTURE_2D, frametexture);
+    // Set our texture parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // Set texture filtering
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // Load, create texture and generate mipmaps
+    unsigned char* image9 = SOIL_load_image(FileSystem::getPath("resources/images/gold.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image9);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    SOIL_free_image_data(image9);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+
+    /* Trophy Texture*/
+    glGenTextures(1, &trophytexture);
+    glBindTexture(GL_TEXTURE_2D, trophytexture);
+    // Set our texture parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // Set texture filtering
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // Load, create texture and generate mipmaps
+    unsigned char* image10 = SOIL_load_image(FileSystem::getPath("resources/images/gold.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image10);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    SOIL_free_image_data(image10);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    /* Trophy Texture*/
+    glGenTextures(1, &benchtexture);
+    glBindTexture(GL_TEXTURE_2D, benchtexture);
+    // Set our texture parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // Set texture filtering
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // Load, create texture and generate mipmaps
+    unsigned char* image12 = SOIL_load_image(FileSystem::getPath("resources/images/bench.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image12);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    SOIL_free_image_data(image12);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+
     /* Room Texture*/
     glGenTextures(1, &roomtexture);
     glBindTexture(GL_TEXTURE_2D, roomtexture);
@@ -595,7 +779,7 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // Load, create texture and generate mipmaps
-    unsigned char* image8 = SOIL_load_image(FileSystem::getPath("resources/images/floor.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+    unsigned char* image8 = SOIL_load_image(FileSystem::getPath("resources/images/wallpaper.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image8);
     glGenerateMipmap(GL_TEXTURE_2D);
     SOIL_free_image_data(image8);
@@ -636,6 +820,18 @@ int main()
 
     //Load floor
     Model floorModel(FileSystem::getPath("resources/objects/painting/frame-plane-2.obj").c_str());
+
+    //Load roof
+    Model roofModel(FileSystem::getPath("resources/objects/roof-plane.obj").c_str());
+
+    //Load frames
+    Model frameModel(FileSystem::getPath("resources/objects/frames.obj").c_str());
+
+    //Load trophys
+    Model trophyModel(FileSystem::getPath("resources/objects/trophy.obj").c_str());
+
+    //Load benches
+    Model benchModel(FileSystem::getPath("resources/objects/bench.obj").c_str());
 
 
     ///////////////
@@ -979,6 +1175,194 @@ int main()
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
 
+
+
+        /*ROOF*/
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, rooftexture);
+        glUniform1i(glGetUniformLocation(roofShader.Program, "roofTexture"), 0);
+
+        // Use cooresponding shader when setting uniforms/drawing objects
+        roofShader.Use();
+
+        GLint objectColorLocRoof = glGetUniformLocation(roofShader.Program, "objectColor");
+        GLint lightColorLocRoof  = glGetUniformLocation(roofShader.Program, "lightColor");
+        GLint lightPosLocRoof    = glGetUniformLocation(roofShader.Program, "lightPos");
+        GLint viewPosLocRoof     = glGetUniformLocation(roofShader.Program, "viewPos");
+        glUniform3f(objectColorLocRoof, 1.0f, 1.0f, 1.0f);
+        glUniform3f(lightColorLocRoof,  1.0f, 1.0f, 1.0f);
+        glUniform3f(lightPosLocRoof,    lightPos.x, lightPos.y, lightPos.z);
+        glUniform3f(viewPosLocRoof,     camera.Position.x, camera.Position.y, camera.Position.z);
+
+        // Create camera transformations
+        glm::mat4 roofView;
+        roofView = camera.GetViewMatrix();
+        glm::mat4 roofProjection = glm::perspective(camera.Zoom, (GLfloat)w / (GLfloat)h, 0.1f, 100.0f);
+        // Get the uniform locations
+        GLint roofModelLoc = glGetUniformLocation(roofShader.Program, "model");
+        GLint roofViewLoc = glGetUniformLocation(roofShader.Program,  "view");
+        GLint roofProjLoc = glGetUniformLocation(roofShader.Program,  "projection");
+        // Pass the matrices to the shader
+        glUniformMatrix4fv(roofViewLoc, 1, GL_FALSE, glm::value_ptr(roofView));
+        glUniformMatrix4fv(roofProjLoc, 1, GL_FALSE, glm::value_ptr(roofProjection));
+
+        // Draw the container (using container's vertex attributes)
+        glBindVertexArray(roofContainerVAO);
+
+        glm::mat4 modelRoof;
+        // The following line modifies the location of the painting.
+         //rotate around the y
+        modelRoof = glm::rotate(modelRoof, (glm::mediump_float)90, glm::vec3(0.0f, 1.0f, 0.0f));
+        modelRoof = glm::translate(modelRoof, glm::vec3(11.90f, 0.2f, 2.0f)); // Translate it down a bit so it's at the center of the scene
+        modelRoof = glm::scale(modelRoof, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
+
+        glUniformMatrix4fv(glGetUniformLocation(roofShader.Program, "roofmodel"), 1, GL_FALSE, glm::value_ptr(modelRoof));
+        roofModel.Draw(roofShader);
+
+        glUniformMatrix4fv(roofModelLoc, 1, GL_FALSE, glm::value_ptr(modelRoof));
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+
+
+        /*Frames*/
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, frametexture);
+        glUniform1i(glGetUniformLocation(frameShader.Program, "frameTexture"), 0);
+
+        // Use cooresponding shader when setting uniforms/drawing objects
+        frameShader.Use();
+
+        GLint objectColorLocFrame = glGetUniformLocation(frameShader.Program, "objectColor");
+        GLint lightColorLocFrame  = glGetUniformLocation(frameShader.Program, "lightColor");
+        GLint lightPosLocFrame    = glGetUniformLocation(frameShader.Program, "lightPos");
+        GLint viewPosLocFrame     = glGetUniformLocation(frameShader.Program, "viewPos");
+        glUniform3f(objectColorLocFrame, 1.0f, 1.0f, 1.0f);
+        glUniform3f(lightColorLocFrame,  1.0f, 1.0f, 1.0f);
+        glUniform3f(lightPosLocFrame,    lightPos.x, lightPos.y, lightPos.z);
+        glUniform3f(viewPosLocFrame,     camera.Position.x, camera.Position.y, camera.Position.z);
+
+        // Create camera transformations
+        glm::mat4 frameView;
+        frameView = camera.GetViewMatrix();
+        glm::mat4 frameProjection = glm::perspective(camera.Zoom, (GLfloat)w / (GLfloat)h, 0.1f, 100.0f);
+        // Get the uniform locations
+        GLint frameModelLoc = glGetUniformLocation(frameShader.Program, "model");
+        GLint frameViewLoc = glGetUniformLocation(frameShader.Program,  "view");
+        GLint frameProjLoc = glGetUniformLocation(frameShader.Program,  "projection");
+        // Pass the matrices to the shader
+        glUniformMatrix4fv(frameViewLoc, 1, GL_FALSE, glm::value_ptr(frameView));
+        glUniformMatrix4fv(frameProjLoc, 1, GL_FALSE, glm::value_ptr(frameProjection));
+
+        // Draw the container (using container's vertex attributes)
+        glBindVertexArray(frameContainerVAO);
+
+        glm::mat4 modelFrame;
+        // The following line modifies the location of the painting.
+         //rotate around the y
+        modelFrame = glm::rotate(modelFrame, (glm::mediump_float)90, glm::vec3(0.0f, 1.0f, 0.0f));
+        modelFrame = glm::translate(modelFrame, glm::vec3(11.90f, 0.2f, 2.0f)); // Translate it down a bit so it's at the center of the scene
+        modelFrame = glm::scale(modelFrame, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
+
+        glUniformMatrix4fv(glGetUniformLocation(frameShader.Program, "framemodel"), 1, GL_FALSE, glm::value_ptr(modelFrame));
+        frameModel.Draw(frameShader);
+
+        glUniformMatrix4fv(frameModelLoc, 1, GL_FALSE, glm::value_ptr(modelFrame));
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+
+
+       /*Trophys*/
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, trophytexture);
+        glUniform1i(glGetUniformLocation(trophyShader.Program, "trophyTexture"), 0);
+
+        // Use cooresponding shader when setting uniforms/drawing objects
+        trophyShader.Use();
+
+        GLint objectColorLocTrophy = glGetUniformLocation(trophyShader.Program, "objectColor");
+        GLint lightColorLocTrophy  = glGetUniformLocation(trophyShader.Program, "lightColor");
+        GLint lightPosLocTrophy    = glGetUniformLocation(trophyShader.Program, "lightPos");
+        GLint viewPosLocTrophy     = glGetUniformLocation(trophyShader.Program, "viewPos");
+        glUniform3f(objectColorLocTrophy, 1.0f, 1.0f, 1.0f);
+        glUniform3f(lightColorLocTrophy,  1.0f, 1.0f, 1.0f);
+        glUniform3f(lightPosLocTrophy,    lightPos.x, lightPos.y, lightPos.z);
+        glUniform3f(viewPosLocTrophy,     camera.Position.x, camera.Position.y, camera.Position.z);
+
+        // Create camera transformations
+        glm::mat4 trophyView;
+        trophyView = camera.GetViewMatrix();
+        glm::mat4 trophyProjection = glm::perspective(camera.Zoom, (GLfloat)w / (GLfloat)h, 0.1f, 100.0f);
+        // Get the uniform locations
+        GLint trophyModelLoc = glGetUniformLocation(trophyShader.Program, "model");
+        GLint trophyViewLoc = glGetUniformLocation(trophyShader.Program,  "view");
+        GLint trophyProjLoc = glGetUniformLocation(trophyShader.Program,  "projection");
+        // Pass the matrices to the shader
+        glUniformMatrix4fv(trophyViewLoc, 1, GL_FALSE, glm::value_ptr(trophyView));
+        glUniformMatrix4fv(trophyProjLoc, 1, GL_FALSE, glm::value_ptr(trophyProjection));
+
+        // Draw the container (using container's vertex attributes)
+        glBindVertexArray(trophyContainerVAO);
+
+        glm::mat4 modelTrophy;
+        // The following line modifies the location of the painting.
+         //rotate around the y
+        modelTrophy = glm::rotate(modelTrophy, (glm::mediump_float)90, glm::vec3(0.0f, 1.0f, 0.0f));
+        modelTrophy = glm::translate(modelTrophy, glm::vec3(11.90f, 0.2f, 2.0f)); // Translate it down a bit so it's at the center of the scene
+        modelTrophy = glm::scale(modelTrophy, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
+
+        glUniformMatrix4fv(glGetUniformLocation(trophyShader.Program, "trophymodel"), 1, GL_FALSE, glm::value_ptr(modelTrophy));
+        trophyModel.Draw(trophyShader);
+
+        glUniformMatrix4fv(trophyModelLoc, 1, GL_FALSE, glm::value_ptr(modelTrophy));
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+
+
+       /*Bench*/
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, benchtexture);
+        glUniform1i(glGetUniformLocation(benchShader.Program, "benchTexture"), 0);
+
+        // Use cooresponding shader when setting uniforms/drawing objects
+        benchShader.Use();
+
+        GLint objectColorLocBench = glGetUniformLocation(benchShader.Program, "objectColor");
+        GLint lightColorLocBench  = glGetUniformLocation(benchShader.Program, "lightColor");
+        GLint lightPosLocBench    = glGetUniformLocation(benchShader.Program, "lightPos");
+        GLint viewPosLocBench     = glGetUniformLocation(benchShader.Program, "viewPos");
+        glUniform3f(objectColorLocBench, 1.0f, 1.0f, 1.0f);
+        glUniform3f(lightColorLocBench,  1.0f, 1.0f, 1.0f);
+        glUniform3f(lightPosLocBench,    lightPos.x, lightPos.y, lightPos.z);
+        glUniform3f(viewPosLocBench,     camera.Position.x, camera.Position.y, camera.Position.z);
+
+        // Create camera transformations
+        glm::mat4 benchView;
+        benchView = camera.GetViewMatrix();
+        glm::mat4 benchProjection = glm::perspective(camera.Zoom, (GLfloat)w / (GLfloat)h, 0.1f, 100.0f);
+        // Get the uniform locations
+        GLint benchModelLoc = glGetUniformLocation(benchShader.Program, "model");
+        GLint benchViewLoc = glGetUniformLocation(benchShader.Program,  "view");
+        GLint benchProjLoc = glGetUniformLocation(benchShader.Program,  "projection");
+        // Pass the matrices to the shader
+        glUniformMatrix4fv(benchViewLoc, 1, GL_FALSE, glm::value_ptr(benchView));
+        glUniformMatrix4fv(benchProjLoc, 1, GL_FALSE, glm::value_ptr(benchProjection));
+
+        // Draw the container (using container's vertex attributes)
+        glBindVertexArray(benchContainerVAO);
+
+        glm::mat4 modelBench;
+        // The following line modifies the location of the painting.
+         //rotate around the y
+        modelBench = glm::rotate(modelBench, (glm::mediump_float)90, glm::vec3(0.0f, 1.0f, 0.0f));
+        modelBench = glm::translate(modelBench, glm::vec3(11.90f, 0.2f, 2.0f)); // Translate it down a bit so it's at the center of the scene
+        modelBench = glm::scale(modelBench, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
+
+        glUniformMatrix4fv(glGetUniformLocation(benchShader.Program, "benchmodel"), 1, GL_FALSE, glm::value_ptr(modelBench));
+        benchModel.Draw(benchShader);
+
+        glUniformMatrix4fv(benchModelLoc, 1, GL_FALSE, glm::value_ptr(modelBench));
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
 
         /* Room */
         glActiveTexture(GL_TEXTURE0);
