@@ -752,7 +752,7 @@ int main()
     SOIL_free_image_data(image10);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    /* Trophy Texture*/
+    /* Bench Texture*/
     glGenTextures(1, &benchtexture);
     glBindTexture(GL_TEXTURE_2D, benchtexture);
     // Set our texture parameters
@@ -762,7 +762,7 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // Load, create texture and generate mipmaps
-    unsigned char* image12 = SOIL_load_image(FileSystem::getPath("resources/images/bench.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+    unsigned char* image12 = SOIL_load_image(FileSystem::getPath("resources/images/floor2.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image12);
     glGenerateMipmap(GL_TEXTURE_2D);
     SOIL_free_image_data(image12);
@@ -779,7 +779,7 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // Load, create texture and generate mipmaps
-    unsigned char* image8 = SOIL_load_image(FileSystem::getPath("resources/images/floor2.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+    unsigned char* image8 = SOIL_load_image(FileSystem::getPath("resources/images/wallpaperROOF.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image8);
     glGenerateMipmap(GL_TEXTURE_2D);
     SOIL_free_image_data(image8);
