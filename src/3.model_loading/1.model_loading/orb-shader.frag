@@ -46,7 +46,7 @@ void main()
     /* Ambient lighting */
 
     // Choose a fraction for ambient.
-    float ambient = 0.2f;
+    float ambient = 1.0f;
 
 
     /* Diffuse lighting */
@@ -61,10 +61,10 @@ void main()
     /* Specular lighting */
     
     // Set scaling factor.
-    float specular = 0.0f;
+    float specular = 6.0f;
 
     // Set a shininess for the object.
-    float shininess = 0;
+    float shininess = 8;
     
     // Calculate normalized vector from fragment to view.
     vec3 fragToViewVector = normalize(viewPos - FragPos);
