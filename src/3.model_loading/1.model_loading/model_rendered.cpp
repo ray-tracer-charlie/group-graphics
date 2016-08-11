@@ -713,7 +713,7 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // Load, create texture and generate mipmaps
-    unsigned char* image11 = SOIL_load_image(FileSystem::getPath("resources/images/floor2.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+    unsigned char* image11 = SOIL_load_image(FileSystem::getPath("resources/images/wallpaper.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image11);
     glGenerateMipmap(GL_TEXTURE_2D);
     SOIL_free_image_data(image11);
@@ -779,7 +779,7 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // Load, create texture and generate mipmaps
-    unsigned char* image8 = SOIL_load_image(FileSystem::getPath("resources/images/wallpaper.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+    unsigned char* image8 = SOIL_load_image(FileSystem::getPath("resources/images/floor2.jpg").c_str(), &width, &height, 0, SOIL_LOAD_RGB);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image8);
     glGenerateMipmap(GL_TEXTURE_2D);
     SOIL_free_image_data(image8);
@@ -816,22 +816,22 @@ int main()
     Model paintingModel6(FileSystem::getPath("resources/objects/painting/frame-plane-2.obj").c_str());
 
     //Load room model
-    Model roomModel(FileSystem::getPath("resources/objects/gallery/gallery-room-2-trophy.obj").c_str());
+    Model roomModel(FileSystem::getPath("resources/objects/gallery/roof.obj").c_str());
 
     //Load floor
-    Model floorModel(FileSystem::getPath("resources/objects/painting/frame-plane-2.obj").c_str());
+    Model floorModel(FileSystem::getPath("resources/objects/gallery/floor.obj").c_str());
 
     //Load roof
-    Model roofModel(FileSystem::getPath("resources/objects/roof-plane.obj").c_str());
+    Model roofModel(FileSystem::getPath("resources/objects/gallery/walls.obj").c_str());
 
     //Load frames
-    Model frameModel(FileSystem::getPath("resources/objects/frames.obj").c_str());
+    Model frameModel(FileSystem::getPath("resources/objects/gallery/wall-frame.obj").c_str());
 
     //Load trophys
-    Model trophyModel(FileSystem::getPath("resources/objects/trophy.obj").c_str());
+    Model trophyModel(FileSystem::getPath("resources/objects/gallery/trophy.obj").c_str());
 
     //Load benches
-    Model benchModel(FileSystem::getPath("resources/objects/bench.obj").c_str());
+    Model benchModel(FileSystem::getPath("resources/objects/gallery/benches.obj").c_str());
 
 
     ///////////////
@@ -1164,9 +1164,9 @@ int main()
         glm::mat4 modelFloor;
         // The following line modifies the location of the painting.
          //rotate around the y
-        modelFloor = glm::rotate(modelFloor, (glm::mediump_float)90, glm::vec3(0.0f, 1.0f, 0.0f));
-        modelFloor = glm::translate(modelFloor, glm::vec3(11.90f, 0.2f, 2.0f)); // Translate it down a bit so it's at the center of the scene
-        modelFloor = glm::scale(modelFloor, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
+      //  modelFloor = glm::rotate(modelFloor, (glm::mediump_float)90, glm::vec3(0.0f, 1.0f, 0.0f));
+      //  modelFloor = glm::translate(modelFloor, glm::vec3(11.90f, 0.2f, 2.0f)); // Translate it down a bit so it's at the center of the scene
+      //  modelFloor = glm::scale(modelFloor, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
 
         glUniformMatrix4fv(glGetUniformLocation(floorShader.Program, "floormodel"), 1, GL_FALSE, glm::value_ptr(modelFloor));
         floorModel.Draw(floorShader);
@@ -1212,9 +1212,9 @@ int main()
         glm::mat4 modelRoof;
         // The following line modifies the location of the painting.
          //rotate around the y
-        modelRoof = glm::rotate(modelRoof, (glm::mediump_float)90, glm::vec3(0.0f, 1.0f, 0.0f));
-        modelRoof = glm::translate(modelRoof, glm::vec3(11.90f, 0.2f, 2.0f)); // Translate it down a bit so it's at the center of the scene
-        modelRoof = glm::scale(modelRoof, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
+      //  modelRoof = glm::rotate(modelRoof, (glm::mediump_float)90, glm::vec3(0.0f, 1.0f, 0.0f));
+      //  modelRoof = glm::translate(modelRoof, glm::vec3(11.90f, 0.2f, 2.0f)); // Translate it down a bit so it's at the center of the scene
+       // modelRoof = glm::scale(modelRoof, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
 
         glUniformMatrix4fv(glGetUniformLocation(roofShader.Program, "roofmodel"), 1, GL_FALSE, glm::value_ptr(modelRoof));
         roofModel.Draw(roofShader);
@@ -1259,9 +1259,9 @@ int main()
         glm::mat4 modelFrame;
         // The following line modifies the location of the painting.
          //rotate around the y
-        modelFrame = glm::rotate(modelFrame, (glm::mediump_float)90, glm::vec3(0.0f, 1.0f, 0.0f));
-        modelFrame = glm::translate(modelFrame, glm::vec3(11.90f, 0.2f, 2.0f)); // Translate it down a bit so it's at the center of the scene
-        modelFrame = glm::scale(modelFrame, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
+     //   modelFrame = glm::rotate(modelFrame, (glm::mediump_float)90, glm::vec3(0.0f, 1.0f, 0.0f));
+     //   modelFrame = glm::translate(modelFrame, glm::vec3(11.90f, 0.2f, 2.0f)); // Translate it down a bit so it's at the center of the scene
+      //  modelFrame = glm::scale(modelFrame, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
 
         glUniformMatrix4fv(glGetUniformLocation(frameShader.Program, "framemodel"), 1, GL_FALSE, glm::value_ptr(modelFrame));
         frameModel.Draw(frameShader);
@@ -1306,9 +1306,9 @@ int main()
         glm::mat4 modelTrophy;
         // The following line modifies the location of the painting.
          //rotate around the y
-        modelTrophy = glm::rotate(modelTrophy, (glm::mediump_float)90, glm::vec3(0.0f, 1.0f, 0.0f));
-        modelTrophy = glm::translate(modelTrophy, glm::vec3(11.90f, 0.2f, 2.0f)); // Translate it down a bit so it's at the center of the scene
-        modelTrophy = glm::scale(modelTrophy, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
+    //    modelTrophy = glm::rotate(modelTrophy, (glm::mediump_float)90, glm::vec3(0.0f, 1.0f, 0.0f));
+    //    modelTrophy = glm::translate(modelTrophy, glm::vec3(11.90f, 0.2f, 2.0f)); // Translate it down a bit so it's at the center of the scene
+    //    modelTrophy = glm::scale(modelTrophy, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
 
         glUniformMatrix4fv(glGetUniformLocation(trophyShader.Program, "trophymodel"), 1, GL_FALSE, glm::value_ptr(modelTrophy));
         trophyModel.Draw(trophyShader);
@@ -1353,9 +1353,9 @@ int main()
         glm::mat4 modelBench;
         // The following line modifies the location of the painting.
          //rotate around the y
-        modelBench = glm::rotate(modelBench, (glm::mediump_float)90, glm::vec3(0.0f, 1.0f, 0.0f));
-        modelBench = glm::translate(modelBench, glm::vec3(11.90f, 0.2f, 2.0f)); // Translate it down a bit so it's at the center of the scene
-        modelBench = glm::scale(modelBench, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
+     //   modelBench = glm::rotate(modelBench, (glm::mediump_float)90, glm::vec3(0.0f, 1.0f, 0.0f));
+     //   modelBench = glm::translate(modelBench, glm::vec3(11.90f, 0.2f, 2.0f)); // Translate it down a bit so it's at the center of the scene
+     //   modelBench = glm::scale(modelBench, glm::vec3(1.12f, 1.12f, 1.12f)); // It's a bit too big for our scene, so scale it down
 
         glUniformMatrix4fv(glGetUniformLocation(benchShader.Program, "benchmodel"), 1, GL_FALSE, glm::value_ptr(modelBench));
         benchModel.Draw(benchShader);

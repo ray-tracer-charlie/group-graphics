@@ -60,10 +60,10 @@ void main()
     /* Specular lighting */
     
     // Set scaling factor.
-    float specular = 0.0f;
+    float specular = 2.4f;
 
     // Set a shininess for the object.
-    float shininess = 0;
+    float shininess = 8;
     
     // Calculate normalized vector from fragment to view.
     vec3 fragToViewVector = normalize(viewPos - FragPos);
@@ -78,14 +78,14 @@ void main()
     float highlight = pow(max(dot(fragToViewVector, reflectionVector), 0.0), shininess);
     
     // Scale the specular lighting by this highlight.
-   // specular *= highlight;
+    specular *= highlight;
 
     /* Combine all three lighting effects. */
     // Combine all three effects into a single factor.
     float cumulative = ambient + diffuse + specular;
 
     // Calculate impact on light by multiplying this combined factor with lightColor.
-    vec3 cumulativeLight = cumulative * lightColor;
+    vec3 cumulativeLight = cumulative * lightColor *specular;
 
 
     // Set color by multiplying cumulativeLight with objectColor, and set "w"-term to 1.0f.
