@@ -56,12 +56,12 @@ void main()
     // cycle through and calculate the light from each spotlight
 /*
     for (int j = 0; j < 6; j++) {
-        result += CalcSpotLight(tilelightPos[i], Normal, viewDir);
+        result += CalcSpotLight(tilelightPos[i], Normal, viewDir) / 5;
     }
 */
 
     for(int i = 0; i < 20; i++) {
-        result += CalcTileLight(tilelightPos[i], Normal, FragPos, viewDir);
+        result += CalcTileLight(tilelightPos[i], Normal, FragPos, viewDir) / 5;
     }
     
     color = vec4(result, 1.0);
