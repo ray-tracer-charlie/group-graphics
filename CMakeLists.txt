@@ -52,51 +52,41 @@ else()
   set(LIBS )
 endif(WIN32)
 
-set(CHAPTERS
-    3.model_loading
-)
-
-set(3.model_loading
-    1.model_loading
-)
-
+set(DEMO src)
 
 configure_file(configuration/root_directory.h.in configuration/root_directory.h)
 include_directories(${CMAKE_BINARY_DIR}/configuration)
 
-foreach(CHAPTER ${CHAPTERS})
-    foreach(DEMO ${${CHAPTER}})
-        file(GLOB SOURCE
-            "src/${CHAPTER}/${DEMO}/*.h"
-            "src/${CHAPTER}/${DEMO}/*.cpp"
-        )
-        add_executable(${DEMO} ${SOURCE})
-        target_link_libraries(${DEMO} ${LIBS})
-		if(WIN32)
-        	set_target_properties(${DEMO} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/${CHAPTER}")
-		elseif(UNIX)
-			set_target_properties(${DEMO} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin/${CHAPTER}")
-		endif(WIN32)
-        # copy shader files to build directory
-        file(GLOB SHADERS 
-                 "src/${CHAPTER}/${DEMO}/*.vs"
-                 "src/${CHAPTER}/${DEMO}/*.frag"
-                 "src/${CHAPTER}/${DEMO}/*.gs"
-        )
-        foreach(SHADER ${SHADERS})
-			if(WIN32)
-            	# configure_file(${SHADER} "test")
-            	add_custom_command(TARGET ${DEMO} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${SHADER} $<TARGET_FILE_DIR:${DEMO}>)
-			elseif(UNIX)
-				file(COPY ${SHADER} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin/${CHAPTER})			
-			endif(WIN32)
+file(GLOB SOURCE
+"${DEMO}/*.h"
+"${DEMO}/*.cpp"
+)
 
-        endforeach(SHADER)
-      # if compiling for visual studio, also use configure file for each project (specifically to set up working directory)
-      if(MSVC)
-          configure_file(${CMAKE_SOURCE_DIR}/configuration/visualstudio.vcxproj.user.in ${CMAKE_CURRENT_BINARY_DIR}/${DEMO}.vcxproj.user @ONLY)
-      endif(MSVC)
-    endforeach(DEMO)
-endforeach(CHAPTER)
+add_executable(${DEMO} ${SOURCE})
+target_link_libraries(${DEMO} ${LIBS})
+if(WIN32)
+  set_target_properties(${DEMO} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/${DEMO}")
+elseif(UNIX)
+	set_target_properties(${DEMO} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin/${DEMO}")
+endif(WIN32)
+    # copy shader files to build directory
+    file(GLOB SHADERS 
+      "src/*.vs"
+      "src/*.frag"
+      "src/*.gs"
+    )
+    foreach(SHADER ${SHADERS})
+	if(WIN32)
+        	# configure_file(${SHADER} "test")
+        	add_custom_command(TARGET ${CHAPTER} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${SHADER} $<TARGET_FILE_DIR:${DEMO}>)
+	elseif(UNIX)
+		file(COPY ${SHADER} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin/${DEMO})			
+	endif(WIN32)
+
+    endforeach(SHADER)
+  # if compiling for visual studio, also use configure file for each project (specifically to set up working directory)
+  if(MSVC)
+      configure_file(${CMAKE_SOURCE_DIR}/configuration/visualstudio.vcxproj.user.in ${CMAKE_CURRENT_BINARY_DIR}/${CHAPTER}.vcxproj.user @ONLY)
+  endif(MSVC)
 
 include_directories(${CMAKE_SOURCE_DIR}/includes)
